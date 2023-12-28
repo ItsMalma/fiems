@@ -9,16 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.18.2",
+    "@ant-design/icons": "^5.2.6",
+    "@ducanh2912/next-pwa": "^10.0.2",
+    "@prisma/client": "^5.7.1",
+    "antd": "^5.12.5",
+    "dayjs": "^1.11.10",
+    "lodash": "^4.17.21",
+    "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.0.4"
+    "use-deep-compare": "^1.2.1",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.0.4"
+    "eslint-config-next": "14.0.4",
+    "prisma": "^5.7.1",
+    "typescript": "^5"
   }
 }

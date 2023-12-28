@@ -1,0 +1,9 @@
+{
+  "id": "fiems",
+  "name": "FIEMS",
+  "short_name": "FIEMS",
+  "start_url": "/",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait"
+}

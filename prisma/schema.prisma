@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model ShipperGroup {
+  code        String   @id @map("_id")
+  name        String   @unique
+  description String
+  createDate  DateTime @default(now())
+  updateDate  DateTime @updatedAt
+  status      Boolean  @default(true)
+
+  Customer Customer[]
+
+  @@map("shipperGroups")
+}
+
+enum CustomerType {
+  Shipper
+  Vendor
+  Shipping
+}
+
+model Customer {
+  code       String        @id @map("_id")
+  type       CustomerType
+  name       String        @unique
+  group      ShipperGroup? @relation(fields: [groupCode], references: [code])
+  groupCode  String?
+  npwp       String?
+  province   String
+  city       String
+  address    String
+  telephone  String?
+  fax        String?
+  email      String?
+  top        Int
+  currency   String
+  createDate DateTime      @default(now())
+  updateDate DateTime      @updatedAt
+  status     Boolean       @default(true)
+
+  Vehicle Vehicle[]
+
+  @@map("customers")
+}
+
+model Route {
+  code        String   @id @map("_id")
+  province    String
+  city        String
+  origin      String
+  destination String
+  createDate  DateTime @default(now())
+  updateDate  DateTime @updatedAt
+  status      Boolean  @default(true)
+
+  @@map("routes")
+}
+
+enum PortType {
+  Arrival
+  Departure
+}
+
+model Port {
+  code       String   @id @map("_id")
+  province   String
+  city       String
+  name       String
+  type       PortType
+  createDate DateTime @default(now())
+  updateDate DateTime @updatedAt
+  status     Boolean  @default(true)
+
+  @@map("ports")
+}
+
+enum SalesJobPosition {
+  Direktur
+  Marketing
+}
+
+model Sales {
+  code        String           @id @map("_id")
+  jobPosition SalesJobPosition
+  name        String
+  nik         String
+  cabang      String
+  phoneNumber String
+  telephone   String
+  fax         String
+  email       String
+  createDate  DateTime         @default(now())
+  updateDate  DateTime         @updatedAt
+  status      Boolean          @default(true)
+
+  @@map("sales")
+}
+
+model Vehicle {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  vendor       Customer @relation(fields: [vendorCode], references: [code])
+  vendorCode   String
+  truckNumber  String   @unique
+  merk         String
+  truckType    String
+  mesinNumber  String
+  rangkaNumber String
+  silinder     Int
+  color        String
+  stnkExpired  DateTime
+  pajakExpired DateTime
+  keurExpired  DateTime
+  createDate   DateTime @default(now())
+  updateDate   DateTime @updatedAt
+  status       Boolean  @default(true)
+
+  @@map("vehicles")
+}

@@ -1,0 +1,139 @@
+import { EditFilled, EyeFilled } from "@ant-design/icons";
+import { Button, Space, Switch } from "antd";
+import { ColumnType } from "antd/es/table";
+import dayjs from "dayjs";
+import { camelToTitleCase } from "./strings";
+
+export function textColumn<RecordType extends object>(
+  key: keyof RecordType,
+  title?: string,
+  filters?: string[]
+): ColumnType<RecordType> {
+  return {
+    title: title ?? camelToTitleCase(key as string),
+    dataIndex: key as string,
+    key: key as string,
+    render: (val) => (val ? val : "-"),
+    filters: filters
+      ? filters.map((option) => ({ text: option, value: option }))
+      : undefined,
+    onFilter: (value, record) => {
+      return record[key] === value;
+    },
+    sorter: (a, b) => {
+      if (a[key] < b[key]) return -1;
+      if (a[key] > b[key]) return 1;
+      return 0;
+    },
+  };
+}
+
+export function dateColumn<RecordType extends object>(
+  key: keyof RecordType,
+  title?: string
+): ColumnType<RecordType> {
+  return {
+    title: title ?? camelToTitleCase(key as string),
+    dataIndex: key as string,
+    key: key as string,
+    render: (val) => (val ? dayjs(val).format("DD/MM/YYYY") : "-"),
+    filters: [
+      { text: "Today", value: "today" },
+      { text: "Yesterday", value: "yesterday" },
+      { text: "This Week", value: "thisWeek" },
+      { text: "This Month", value: "thisMonth" },
+      { text: "This Year", value: "thisYear" },
+    ],
+    onFilter: (value, record) => {
+      const date = dayjs(record[key] as string);
+      switch (value) {
+        case "today":
+          return date.isSame(dayjs(), "day");
+        case "yesterday":
+          return date.isSame(dayjs().subtract(1, "day"), "day");
+        case "thisWeek":
+          return date.isSame(dayjs(), "week");
+        case "thisMonth":
+          return date.isSame(dayjs(), "month");
+        case "thisYear":
+          return date.isSame(dayjs(), "year");
+        default:
+          return false;
+      }
+    },
+    sorter: (a, b) => {
+      if (a[key] < b[key]) return -1;
+      if (a[key] > b[key]) return 1;
+      return 0;
+    },
+  };
+}
+
+export function statusColumn<RecordType extends object>(
+  key: keyof RecordType,
+  onChangeStatus: (checked: boolean, record: RecordType) => void,
+  title?: string
+): ColumnType<RecordType> {
+  return {
+    title: title ?? camelToTitleCase(key as string),
+    dataIndex: key as string,
+    key: key as string,
+    render: (_, record) => (
+      <Switch
+        style={{ backgroundColor: (record[key] as boolean) ? "green" : "red" }}
+        checked={record[key] as boolean}
+        onChange={(checked) => onChangeStatus(checked, record)}
+      />
+    ),
+    filters: [
+      { text: "Active", value: "active" },
+      { text: "Inactive", value: "inactive" },
+    ],
+    onFilter: (value, record) => {
+      switch (value) {
+        case "active":
+          return record[key] as boolean;
+        case "inactive":
+          return !(record[key] as boolean);
+        default:
+          return false;
+      }
+    },
+  };
+}
+
+export function actionColumn<RecordType extends object>(
+  {
+    onView,
+    onEdit,
+  }: {
+    onView?: (record: RecordType) => void;
+    onEdit?: (record: RecordType) => void;
+  },
+  selectKey?: keyof RecordType
+): ColumnType<RecordType> {
+  return {
+    title: "Action",
+    dataIndex: "action",
+    key: "action",
+    render: (_, record) => (
+      <Space>
+        {onView && (
+          <Button
+            type="primary"
+            icon={<EyeFilled />}
+            onClick={() => onView(record)}
+            style={{ backgroundColor: "green" }}
+          />
+        )}
+        {onEdit && (!selectKey || record[selectKey]) && (
+          <Button
+            type="primary"
+            icon={<EditFilled />}
+            onClick={() => onEdit(record)}
+          />
+        )}
+      </Space>
+    ),
+  };
+}

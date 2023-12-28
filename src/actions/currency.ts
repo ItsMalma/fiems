@@ -1,0 +1,52 @@
+"use server";
+
+const currencies = [
+  "USD",
+  "EUR",
+  "JPY",
+  "GBP",
+  "AUD",
+  "CAD",
+  "CHF",
+  "CNY",
+  "SEK",
+  "NZD",
+  "KRW",
+  "SGD",
+  "HKD",
+  "NOK",
+  "MXN",
+  "INR",
+  "BRL",
+  "ZAR",
+  "RUB",
+  "TRY",
+  "IDR",
+  "AED",
+  "SAR",
+  "QAR",
+  "MYR",
+  "THB",
+  "PHP",
+  "VND",
+  "PLN",
+  "ARS",
+  "CLP",
+  "COP",
+  "EGP",
+  "ILS",
+  "KWD",
+  "PEN",
+  "UAH",
+  "CZK",
+  "HUF",
+  "RON",
+  "ZMW",
+];
+
+export async function getCurrencyOptions() {
+  return currencies.map((currency) => ({
+    value: currency,
+    label: currency,
+  }));
+}
