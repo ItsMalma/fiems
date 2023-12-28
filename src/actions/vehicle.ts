@@ -161,7 +161,7 @@ const merk = [
   "MAN",
 ];
 
-export async function getMerkOptions() {
+export async function getVehicleMerkOptions() {
   return merk.map((m) => ({
     value: m,
     label: m,

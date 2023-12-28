@@ -46,6 +46,7 @@ model Customer {
   status     Boolean       @default(true)
 
   Vehicle Vehicle[]
+  Vessel  Vessel[]
 
   @@map("customers")
 }
@@ -122,4 +123,18 @@ model Vehicle {
   status       Boolean  @default(true)
 
   @@map("vehicles")
+}
+
+model Vessel {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  shipping     Customer @relation(fields: [shippingCode], references: [code])
+  shippingCode String
+  name         String   @unique
+  capacity     Int
+  satuan       String
+  createDate   DateTime @default(now())
+  updateDate   DateTime @updatedAt
+  status       Boolean  @default(true)
+
+  @@map("vessels")
 }

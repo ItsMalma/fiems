@@ -49,11 +49,13 @@ export default function Vehicle() {
       {
         onView: (record) => {
           router.replace(
-            `/master/vehicle/save?code=${record["truckNumber"]}&view=1`
+            `/master/vehicle/save?truckNumber=${record["truckNumber"]}&view=1`
           );
         },
         onEdit: (record) => {
-          router.replace(`/master/vehicle/save?code=${record["truckNumber"]}`);
+          router.replace(
+            `/master/vehicle/save?truckNumber=${record["truckNumber"]}`
+          );
         },
       },
       "status"
@@ -66,7 +68,7 @@ export default function Vehicle() {
       saveUrl="/master/vehicle/save"
       columns={columns}
       data={routes}
-      rowKey="code"
+      rowKey="truckNumber"
     />
   );
 }

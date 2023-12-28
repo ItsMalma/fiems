@@ -6,3 +6,5 @@ export const truckTypes = [
   "Fuso",
   "Engkel",
 ];
+
+export const vesselSatuan = ["Teus", "Container"];

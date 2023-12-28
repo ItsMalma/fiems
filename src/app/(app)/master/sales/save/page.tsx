@@ -39,7 +39,7 @@ function dtoToForm(dto: SalesDTO): SalesForm {
   };
 }
 
-export default function SaveRoute() {
+export default function SaveSales() {
   const { message } = App.useApp();
 
   const router = useRouter();

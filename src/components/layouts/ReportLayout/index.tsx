@@ -14,7 +14,7 @@ type ReportLayoutProps<DTO> = {
   columns: ColumnsType<DTO>;
   data?: DTO[];
 
-  rowKey: string;
+  rowKey: keyof DTO;
 
   isLoading?: boolean;
 };

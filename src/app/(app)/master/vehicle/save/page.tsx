@@ -3,9 +3,9 @@
 import { getCustomerOptions } from "@/actions/customer";
 import {
   VehicleDTO,
-  getMerkOptions,
   getTruckTypeOptions,
   getVehicle,
+  getVehicleMerkOptions,
   saveVehicle,
 } from "@/actions/vehicle";
 import { useCustomForm } from "@/components/Form";
@@ -49,13 +49,13 @@ function dtoToForm(dto: VehicleDTO): VehicleForm {
   };
 }
 
-export default function SaveRoute() {
+export default function SaveVehicle() {
   const { message } = App.useApp();
 
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const codeParam = searchParams.get("code");
+  const truckNumberParam = searchParams.get("truckNumber");
   const viewParam = searchParams.get("view");
 
   const { setKey } = useMenu();
@@ -66,7 +66,7 @@ export default function SaveRoute() {
   const CustomForm = useCustomForm<VehicleForm>();
   const [form] = Form.useForm<VehicleForm>();
 
-  const [vehicle] = useAction(getVehicle, codeParam);
+  const [vehicle] = useAction(getVehicle, truckNumberParam);
   React.useEffect(() => {
     if (vehicle && form) {
       form.setFieldsValue(dtoToForm(vehicle));
@@ -74,7 +74,7 @@ export default function SaveRoute() {
   }, [vehicle, form]);
 
   const [vendorOptions] = useAction(getCustomerOptions, "Vendor");
-  const [merkOptions] = useAction(getMerkOptions);
+  const [merkOptions] = useAction(getVehicleMerkOptions);
   const [truckTypeOptions] = useAction(getTruckTypeOptions);
 
   return (
@@ -96,7 +96,7 @@ export default function SaveRoute() {
             pajakExpired: val.pajakExpired.toDate(),
             keurExpired: val.keurExpired.toDate(),
           },
-          codeParam
+          truckNumberParam
         );
         if (err) {
           form.setFields(err);
