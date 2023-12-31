@@ -71,6 +71,7 @@ export default function ReportLayout<DTO extends object>(
         />
       </Flex>
       <Table<DTO>
+        bordered
         rowKey={props.rowKey}
         columns={props.columns.filter(
           (column) => !hideColumns.includes(column.title as string)

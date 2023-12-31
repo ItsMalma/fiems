@@ -25,7 +25,7 @@ export default function Vehicle() {
     setKey("master.vehicle");
   }, [setKey]);
 
-  const [routes, refresh] = useAction(getAllVehicles);
+  const [vehicles, refresh] = useAction(getAllVehicles);
 
   const router = useRouter();
   const columns: ColumnsType<VehicleDTO> = [
@@ -67,7 +67,7 @@ export default function Vehicle() {
       name="Vehicle"
       saveUrl="/master/vehicle/save"
       columns={columns}
-      data={routes}
+      data={vehicles}
       rowKey="truckNumber"
     />
   );

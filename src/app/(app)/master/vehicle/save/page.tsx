@@ -8,11 +8,16 @@ import {
   getVehicleMerkOptions,
   saveVehicle,
 } from "@/actions/vehicle";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import {
+  autoCompleteFilterOption,
+  createDate,
+  requiredRule,
+} from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import { AutoComplete, DatePicker, Input, InputNumber, Select } from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -63,7 +68,6 @@ export default function SaveVehicle() {
     setKey("master.vehicle");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<VehicleForm>();
   const [form] = Form.useForm<VehicleForm>();
 
   const [vehicle] = useAction(getVehicle, truckNumberParam);
@@ -78,8 +82,7 @@ export default function SaveVehicle() {
   const [truckTypeOptions] = useAction(getTruckTypeOptions);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<VehicleForm>
       form={form}
       onSubmit={async (val) => {
         const err = await saveVehicle(
@@ -107,33 +110,80 @@ export default function SaveVehicle() {
       onCancel={() => router.replace("/master/vehicle")}
       view={viewParam === "1"}
     >
-      <CustomForm.CreateDate />
-      <CustomForm.Select
-        name="vendor"
-        label="Vendor"
-        options={vendorOptions}
-        required
-      />
-      <CustomForm.Text name="truckNumber" label="Truck Number" required />
-      <CustomForm.Text
-        name="merk"
-        label="Merk"
-        autoCompletes={merkOptions}
-        required
-      />
-      <CustomForm.Text
-        name="truckType"
-        label="Truck Type"
-        autoCompletes={truckTypeOptions}
-        required
-      />
-      <CustomForm.Text name="mesinNumber" label="Mesin Number" required />
-      <CustomForm.Text name="rangkaNumber" label="Rangka Number" required />
-      <CustomForm.Number name="silinder" label="Silinder" required />
-      <CustomForm.Text name="color" label="Color" required />
-      <CustomForm.Date name="stnkExpired" label="STNK Expired" required />
-      <CustomForm.Date name="pajakExpired" label="Pajak Expired" required />
-      <CustomForm.Date name="keurExpired" label="KEUR Expired" required />
+      <Col span={12}>
+        <DatePicker label="Create Date" name="createDate" {...createDate} />
+      </Col>
+      <Col span={12}>
+        <Select
+          name="vendor"
+          label="Vendor"
+          options={vendorOptions}
+          rules={[requiredRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <Input name="truckNumber" label="Truck Number" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          name="merk"
+          label="Merk"
+          rules={[requiredRule]}
+          options={merkOptions}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          name="truckType"
+          label="Truck Type"
+          rules={[requiredRule]}
+          options={truckTypeOptions}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <Input name="mesinNumber" label="Mesin Number" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Input
+          name="rangkaNumber"
+          label="Rangka Number"
+          rules={[requiredRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <InputNumber
+          name="silinder"
+          label="Silinder"
+          rules={[requiredRule]}
+          min={0}
+        />
+      </Col>
+      <Col span={12}>
+        <Input name="color" label="Color" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <DatePicker
+          name="stnkExpired"
+          label="STNK Expired"
+          rules={[requiredRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <DatePicker
+          name="pajakExpired"
+          label="Pajak Expired"
+          rules={[requiredRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <DatePicker
+          name="keurExpired"
+          label="KEUR Expired"
+          rules={[requiredRule]}
+        />
+      </Col>
     </SaveLayout>
   );
 }

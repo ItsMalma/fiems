@@ -7,11 +7,16 @@ import {
   getVesselSatuanOptions,
   saveVessel,
 } from "@/actions/vessel";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import {
+  autoCompleteFilterOption,
+  createDate,
+  requiredRule,
+} from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import { AutoComplete, DatePicker, Input, InputNumber, Select } from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -48,7 +53,6 @@ export default function SaveVessel() {
     setKey("master.vessel");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<VesselForm>();
   const [form] = Form.useForm<VesselForm>();
 
   const [vessel] = useAction(getVessel, idParam);
@@ -62,8 +66,7 @@ export default function SaveVessel() {
   const [satuanOptions] = useAction(getVesselSatuanOptions);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<VesselForm>
       form={form}
       onSubmit={async (val) => {
         const err = await saveVessel(
@@ -84,21 +87,37 @@ export default function SaveVessel() {
       onCancel={() => router.replace("/master/vessel")}
       view={viewParam === "1"}
     >
-      <CustomForm.CreateDate />
-      <CustomForm.Select
-        name="shipping"
-        label="Shipping"
-        options={shippingOptions}
-        required
-      />
-      <CustomForm.Text name="name" label="Name" required />
-      <CustomForm.Number name="capacity" label="Capacity" required min={0} />
-      <CustomForm.Text
-        name="satuan"
-        label="Satuan"
-        autoCompletes={satuanOptions}
-        required
-      />
+      <Col span={12}>
+        <DatePicker label="Create Date" name="createDate" {...createDate} />
+      </Col>
+      <Col span={12}>
+        <Select
+          name="shipping"
+          label="Shipping"
+          options={shippingOptions}
+          rules={[requiredRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <Input name="name" label="Name" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <InputNumber
+          name="capacity"
+          label="Capacity"
+          rules={[requiredRule]}
+          min={0}
+        />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          name="satuan"
+          label="Satuan"
+          rules={[requiredRule]}
+          options={satuanOptions}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
     </SaveLayout>
   );
 }

@@ -21,7 +21,7 @@ export default function Vessel() {
     setKey("master.vessel");
   }, [setKey]);
 
-  const [routes, refresh] = useAction(getAllVessels);
+  const [vesses, refresh] = useAction(getAllVessels);
 
   const router = useRouter();
   const columns: ColumnsType<VesselDTO> = [
@@ -52,7 +52,7 @@ export default function Vessel() {
       name="Vessel"
       saveUrl="/master/vessel/save"
       columns={columns}
-      data={routes}
+      data={vesses}
       rowKey="id"
     />
   );

@@ -14,15 +14,18 @@
     "@ducanh2912/next-pwa": "^10.0.2",
     "@prisma/client": "^5.7.1",
     "antd": "^5.12.5",
+    "antx": "^5.5.0",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-keyed-flatten-children": "^3.0.0",
     "use-deep-compare": "^1.2.1",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

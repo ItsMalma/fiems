@@ -9,12 +9,27 @@ import {
 } from "@/actions/customer";
 import { getCityOptions, getProvinceOptions } from "@/actions/province";
 import { getShipperGroupOptions } from "@/actions/shipperGroup";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import {
+  autoCompleteFilterOption,
+  createDate,
+  emailRule,
+  faxRule,
+  requiredRule,
+  telephoneRule,
+} from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
 import { CustomerType } from "@prisma/client";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import {
+  AutoComplete,
+  DatePicker,
+  Input,
+  InputNumber,
+  Select,
+  TextArea,
+} from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -69,7 +84,6 @@ export default function SaveCustomer() {
     setKey("master.customer");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<CustomerForm>();
   const [form] = Form.useForm<CustomerForm>();
   const type = Form.useWatch("type", form);
   const province = Form.useWatch("province", form);
@@ -94,8 +108,7 @@ export default function SaveCustomer() {
   const [currencyOptions] = useAction(getCurrencyOptions);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<CustomerForm>
       form={form}
       onSubmit={async (val) => {
         const err = await saveCustomer(
@@ -127,54 +140,79 @@ export default function SaveCustomer() {
         type: "Shipper",
       }}
     >
-      <CustomForm.Select
-        label="Type"
-        name="type"
-        options={[
-          { label: "Shipper", value: "Shipper" },
-          { label: "Vendor", value: "Vendor" },
-          { label: "Shipping", value: "Shipping" },
-        ]}
-        required
-        disabled={!!codeParam}
-      />
-      <CustomForm.Blank />
-      <CustomForm.CreateDate />
-      <CustomForm.Code />
-      <CustomForm.Text label="Name" name="name" required />
-      {type === "Shipper" ? (
-        <CustomForm.Select
-          label="Group"
-          name="group"
-          options={shipperGroupOptions}
+      <Col span={12}>
+        <Select
+          label="Type"
+          name="type"
+          options={[
+            { label: "Shipper", value: "Shipper" },
+            { label: "Vendor", value: "Vendor" },
+            { label: "Shipping", value: "Shipping" },
+          ]}
+          required
+          disabled={!!codeParam}
         />
-      ) : (
-        <CustomForm.Blank />
-      )}
-      <CustomForm.Text label="NPWP" name="npwp" numeric minLength={15} />
-      <CustomForm.Text
-        label="Province"
-        name="province"
-        autoCompletes={provinceOptions}
-        required
-      />
-      <CustomForm.Text
-        label="City"
-        name="city"
-        autoCompletes={cityOptions}
-        required
-      />
-      <CustomForm.Text label="Address" name="address" required area />
-      <CustomForm.Text label="Telephone" name="telephone" telephone />
-      <CustomForm.Text label="Fax" name="fax" fax />
-      <CustomForm.Text label="Email" name="email" email />
-      <CustomForm.Number label="TOP" name="top" required />
-      <CustomForm.Text
-        label="Currency"
-        name="currency"
-        required
-        autoCompletes={currencyOptions}
-      />
+      </Col>
+      <Col span={12}></Col>
+      <Col span={12}>
+        <DatePicker label="Create Date" name="createDate" {...createDate} />
+      </Col>
+      <Col span={12}>
+        <Input label="Code" name="code" disabled />
+      </Col>
+      <Col span={12}>
+        <Input label="Name" name="name" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        {type === "Shipper" && (
+          <Select label="Group" name="group" options={shipperGroupOptions} />
+        )}
+      </Col>
+      <Col span={12}>
+        <Input label="NPWP" name="npwp" minLength={15} rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="Province"
+          name="province"
+          options={provinceOptions}
+          rules={[requiredRule]}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="City"
+          name="city"
+          options={cityOptions}
+          rules={[requiredRule]}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <TextArea label="Address" name="address" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Input label="Telephone" name="telephone" rules={[telephoneRule]} />
+      </Col>
+      <Col span={12}>
+        <Input label="Fax" name="fax" rules={[faxRule]} />
+      </Col>
+      <Col span={12}>
+        <Input label="Email" name="email" rules={[emailRule]} />
+      </Col>
+      <Col span={12}>
+        <InputNumber label="TOP" name="top" rules={[requiredRule]} min={0} />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="Currency"
+          name="currency"
+          rules={[requiredRule]}
+          options={currencyOptions}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
     </SaveLayout>
   );
 }

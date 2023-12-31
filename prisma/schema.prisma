@@ -45,8 +45,9 @@ model Customer {
   updateDate DateTime      @updatedAt
   status     Boolean       @default(true)
 
-  Vehicle Vehicle[]
-  Vessel  Vessel[]
+  Vehicle     Vehicle[]
+  Vessel      Vessel[]
+  PriceVendor PriceVendor[]
 
   @@map("customers")
 }
@@ -60,6 +61,8 @@ model Route {
   createDate  DateTime @default(now())
   updateDate  DateTime @updatedAt
   status      Boolean  @default(true)
+
+  PriceVendorDetail PriceVendorDetail[]
 
   @@map("routes")
 }
@@ -78,6 +81,8 @@ model Port {
   createDate DateTime @default(now())
   updateDate DateTime @updatedAt
   status     Boolean  @default(true)
+
+  PriceVendorDetail PriceVendorDetail[]
 
   @@map("ports")
 }
@@ -137,4 +142,42 @@ model Vessel {
   status       Boolean  @default(true)
 
   @@map("vessels")
+}
+
+model PriceVendor {
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
+  vendor             Customer            @relation(fields: [vendorCode], references: [code])
+  vendorCode         String
+  effectiveStartDate DateTime
+  effectiveEndDate   DateTime
+  details            PriceVendorDetail[]
+  createDate         DateTime            @default(now())
+  updateDate         DateTime            @updatedAt
+
+  @@map("priceVendors")
+}
+
+model PriceVendorDetail {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  priceVendor   PriceVendor @relation(fields: [priceVendorId], references: [id])
+  priceVendorId String      @db.ObjectId
+  route         Route       @relation(fields: [routeCode], references: [code])
+  routeCode     String
+  containerSize String
+  containerType String
+  serviceType   String
+  port          Port        @relation(fields: [portCode], references: [code])
+  portCode      String
+  trackingRate  Float
+  buruh         Float
+  thcOPT        Float
+  thcOPP        Float
+  adminBL       Float
+  cleaning      Float
+  materai       Float
+  createDate    DateTime    @default(now())
+  updateDate    DateTime    @updatedAt
+  status        Boolean     @default(true)
+
+  @@map("priceVendorDetails")
 }

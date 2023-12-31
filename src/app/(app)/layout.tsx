@@ -48,6 +48,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/vessel",
     title: "Vessel",
   },
+  "master.priceVendor": {
+    url: "/master/priceVendor",
+    title: "Price Vendor",
+  },
 };
 
 export default function AppLayout({ children }: React.PropsWithChildren) {
@@ -219,7 +223,7 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
           }}
           openKeys={selectedKeys.open}
           onOpenChange={(keys) => {
-            if (selectedKeys.keyPath) {
+            if (selectedKeys.keyPath && !siderCollapsed) {
               const selectedKeyParent = selectedKeys.keyPath.split(".")[0];
               if (!keys.find((key) => key === selectedKeyParent)) return;
             }

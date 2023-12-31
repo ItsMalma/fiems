@@ -20,7 +20,8 @@ const theme: ThemeConfig = {
     },
     Layout: {
       siderBg: "#266BAC",
-      headerBg: "#ffffff",
+      headerBg: "#48A6DC",
+      headerColor: "#ffffff",
       footerBg: "#cecfd3",
       footerPadding: "16px",
     },

@@ -6,11 +6,12 @@ import {
   getShipperGroupCode,
   saveShipperGroup,
 } from "@/actions/shipperGroup";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import { requiredRule } from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import { DatePicker, Input } from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -45,7 +46,6 @@ export default function SaveShipperGroup() {
     setKey("master.shipperGroup");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<ShipperGroupForm>();
   const [form] = Form.useForm();
 
   const [code] = useAction(getShipperGroupCode);
@@ -63,8 +63,7 @@ export default function SaveShipperGroup() {
   }, [shipperGroup, form]);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<ShipperGroupForm>
       form={form}
       onSubmit={async (val) => {
         const err = await saveShipperGroup(
@@ -83,10 +82,23 @@ export default function SaveShipperGroup() {
       onCancel={() => router.replace("/master/shipperGroup")}
       view={viewParam === "1"}
     >
-      <CustomForm.CreateDate />
-      <CustomForm.Code />
-      <CustomForm.Text label="Name" name="name" required />
-      <CustomForm.Text label="Description" name="description" />
+      <Col span={12}>
+        <DatePicker
+          label="Create Date"
+          name="createDate"
+          initialValue={dayjs()}
+          disabled
+        />
+      </Col>
+      <Col span={12}>
+        <Input label="Code" name="code" disabled />
+      </Col>
+      <Col span={12}>
+        <Input label="Name" name="name" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Input label="Description" name="description" />
+      </Col>
     </SaveLayout>
   );
 }

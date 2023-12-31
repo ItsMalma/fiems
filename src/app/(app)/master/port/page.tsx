@@ -20,7 +20,7 @@ export default function Port() {
     setKey("master.port");
   }, [setKey]);
 
-  const [routes, refresh] = useAction(getAllPorts);
+  const [ports, refresh] = useAction(getAllPorts);
 
   const router = useRouter();
   const columns: ColumnsType<PortDTO> = [
@@ -52,7 +52,7 @@ export default function Port() {
       name="Port"
       saveUrl="/master/port/save"
       columns={columns}
-      data={routes}
+      data={ports}
       rowKey="code"
     />
   );

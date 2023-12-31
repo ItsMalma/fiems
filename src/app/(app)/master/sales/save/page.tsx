@@ -1,12 +1,19 @@
 "use client";
 
 import { SalesDTO, getSales, getSalesCode, saveSales } from "@/actions/sales";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import {
+  createDate,
+  emailRule,
+  faxRule,
+  requiredRule,
+  telephoneRule,
+} from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
 import { SalesJobPosition } from "@prisma/client";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import { DatePicker, Input, Select } from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -53,7 +60,6 @@ export default function SaveSales() {
     setKey("master.sales");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<SalesForm>();
   const [form] = Form.useForm<SalesForm>();
 
   const [code] = useAction(getSalesCode);
@@ -71,8 +77,7 @@ export default function SaveSales() {
   }, [sales, form]);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<SalesForm>
       form={form}
       onSubmit={async (val) => {
         const err = await saveSales(
@@ -97,34 +102,58 @@ export default function SaveSales() {
       onCancel={() => router.replace("/master/sales")}
       view={viewParam === "1"}
     >
-      <CustomForm.CreateDate />
-      <CustomForm.Code />
-      <CustomForm.Select
-        label="Job Position"
-        name="jobPosition"
-        options={[
-          { label: "Direktur", value: "Direktur" },
-          { label: "Marketing", value: "Marketing" },
-        ]}
-      />
-      <CustomForm.Text label="Name" name="name" required />
-      <CustomForm.Text
-        label="NIK"
-        name="nik"
-        required
-        minLength={16}
-        maxLength={16}
-      />
-      <CustomForm.Text label="Cabang" name="cabang" required />
-      <CustomForm.Text
-        label="Phone Number"
-        name="phoneNumber"
-        required
-        telephone
-      />
-      <CustomForm.Text label="Telephone" name="telephone" required telephone />
-      <CustomForm.Text label="Fax" name="fax" required fax />
-      <CustomForm.Text label="Email" name="email" required email />
+      <Col span={12}>
+        <DatePicker label="Create Date" name="createDate" {...createDate} />
+      </Col>
+      <Col span={12}>
+        <Input label="Code" name="code" disabled />
+      </Col>
+      <Col span={12}>
+        <Select
+          label="Job Position"
+          name="jobPosition"
+          rules={[requiredRule]}
+          options={[
+            { label: "Direktur", value: "Direktur" },
+            { label: "Marketing", value: "Marketing" },
+          ]}
+        />
+      </Col>
+      <Col span={12}>
+        <Input label="Name" name="name" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Input
+          label="NIK"
+          name="nik"
+          rules={[requiredRule]}
+          minLength={16}
+          maxLength={16}
+        />
+      </Col>
+      <Col span={12}>
+        <Input label="Cabang" name="cabang" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Input
+          label="Phone Number"
+          name="phoneNumber"
+          rules={[requiredRule, telephoneRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <Input
+          label="Telephone"
+          name="telephone"
+          rules={[requiredRule, telephoneRule]}
+        />
+      </Col>
+      <Col span={12}>
+        <Input label="Fax" name="fax" rules={[requiredRule, faxRule]} />
+      </Col>
+      <Col span={12}>
+        <Input label="Email" name="email" rules={[requiredRule, emailRule]} />
+      </Col>
     </SaveLayout>
   );
 }

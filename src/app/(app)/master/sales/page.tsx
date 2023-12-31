@@ -20,7 +20,7 @@ export default function Sales() {
     setKey("master.sales");
   }, [setKey]);
 
-  const [routes, refresh] = useAction(getAllSales);
+  const [sales, refresh] = useAction(getAllSales);
 
   const router = useRouter();
   const columns: ColumnsType<SalesDTO> = [
@@ -56,7 +56,7 @@ export default function Sales() {
       name="Sales"
       saveUrl="/master/sales/save"
       columns={columns}
-      data={routes}
+      data={sales}
       rowKey="code"
     />
   );

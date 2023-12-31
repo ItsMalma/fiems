@@ -2,12 +2,17 @@
 
 import { PortDTO, getPort, getPortCode, savePort } from "@/actions/port";
 import { getCityOptions, getProvinceOptions } from "@/actions/province";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import {
+  autoCompleteFilterOption,
+  createDate,
+  requiredRule,
+} from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
 import { PortType } from "@prisma/client";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import { AutoComplete, DatePicker, Input, Select } from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -46,7 +51,6 @@ export default function SavePort() {
     setKey("master.port");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<PortForm>();
   const [form] = Form.useForm<PortForm>();
   const province = Form.useWatch("province", form);
 
@@ -68,8 +72,7 @@ export default function SavePort() {
   const [cityOptions] = useAction(getCityOptions, province);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<PortForm>
       form={form}
       onSubmit={async (val) => {
         const err = await savePort(
@@ -90,30 +93,44 @@ export default function SavePort() {
       onCancel={() => router.replace("/master/port")}
       view={viewParam === "1"}
     >
-      <CustomForm.CreateDate />
-      <CustomForm.Code />
-      <CustomForm.Text
-        label="Province"
-        name="province"
-        autoCompletes={provinceOptions}
-        required
-      />
-      <CustomForm.Text
-        label="City"
-        name="city"
-        autoCompletes={cityOptions}
-        required
-      />
-      <CustomForm.Text label="Name" name="name" required />
-      <CustomForm.Select
-        label="Type"
-        name="type"
-        required
-        options={[
-          { label: "Arrival", value: "Arrival" },
-          { label: "Departure", value: "Departure" },
-        ]}
-      />
+      <Col span={12}>
+        <DatePicker label="Create Date" name="createDate" {...createDate} />
+      </Col>
+      <Col span={12}>
+        <Input label="Code" name="code" disabled />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="Province"
+          name="province"
+          options={provinceOptions}
+          rules={[requiredRule]}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="City"
+          name="city"
+          options={cityOptions}
+          rules={[requiredRule]}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <Input label="Name" name="name" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Select
+          label="Type"
+          name="type"
+          rules={[requiredRule]}
+          options={[
+            { label: "Arrival", value: "Arrival" },
+            { label: "Departure", value: "Departure" },
+          ]}
+        />
+      </Col>
     </SaveLayout>
   );
 }

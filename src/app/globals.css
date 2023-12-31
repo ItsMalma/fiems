@@ -38,6 +38,20 @@ ul[role="menu"].ant-menu-sub > li[role="menuitem"].ant-menu-item:active {
 }
 
 .ant-table-column-title,
-td.ant-table-cell {
+.ant-table-cell {
   white-space: nowrap !important;
+}
+
+.ant-form-item-control-input .ant-picker,
+.ant-form-item-control-input .ant-input-number {
+  width: 100% !important;
+}
+
+.form-list-container-row label {
+  font-weight: 600 !important;
+  color: #374151;
+}
+
+.ant-form-item-explain-error {
+  color: #ff4d4f !important;
 }

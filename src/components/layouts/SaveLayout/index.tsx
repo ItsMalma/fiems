@@ -1,15 +1,13 @@
-import { ForwardedRefInternalForm } from "@/components/Form";
 import {
   BackwardFilled,
   CloseCircleFilled,
   SaveFilled,
 } from "@ant-design/icons";
-import { Button, Flex, FormInstance, Space } from "antd";
+import { Button, Flex, Form, FormInstance, Row, Space } from "antd";
 import React from "react";
 import SaveLayoutSkeleton from "./skeleton";
 
 type SaveLayoutProps<T extends object> = {
-  CustomForm: ForwardedRefInternalForm<T>;
   form: FormInstance;
   onSubmit: (val: T) => void | Promise<void>;
   onCancel: () => void | Promise<void>;
@@ -21,7 +19,6 @@ type SaveLayoutProps<T extends object> = {
 } & React.PropsWithChildren;
 
 export default function SaveLayout<T extends object>({
-  CustomForm,
   form,
   ...props
 }: SaveLayoutProps<T>) {
@@ -34,8 +31,19 @@ export default function SaveLayout<T extends object>({
       {props.isLoading ? (
         <SaveLayoutSkeleton totalInput={totalInput} />
       ) : (
-        <CustomForm
+        <Form
           form={form}
+          layout="vertical"
+          colon={false}
+          requiredMark={(label, { required }) => {
+            return (
+              <>
+                {label}
+                {required && <span style={{ color: "red" }}>*</span>}
+              </>
+            );
+          }}
+          autoComplete="off"
           onFinish={async (val) => {
             await Promise.resolve(props.onSubmit(val));
           }}
@@ -43,10 +51,10 @@ export default function SaveLayout<T extends object>({
           initialValues={props.init}
           disabled={props.view}
         >
-          {props.children}
-        </CustomForm>
+          <Row gutter={[12, 12]}>{props.children}</Row>
+        </Form>
       )}
-      <Space style={{ marginTop: "12px" }}>
+      <Space style={{ marginLeft: "auto", marginTop: "12px" }}>
         {!props.view && (
           <Button
             type="primary"

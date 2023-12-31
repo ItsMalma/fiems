@@ -2,11 +2,16 @@
 
 import { getCityOptions, getProvinceOptions } from "@/actions/province";
 import { RouteDTO, getRoute, getRouteCode, saveRoute } from "@/actions/route";
-import { useCustomForm } from "@/components/Form";
 import SaveLayout from "@/components/layouts/SaveLayout";
 import { useAction } from "@/lib/hooks";
+import {
+  autoCompleteFilterOption,
+  createDate,
+  requiredRule,
+} from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
-import { App, Form } from "antd";
+import { App, Col, Form } from "antd";
+import { AutoComplete, DatePicker, Input } from "antx";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -45,7 +50,6 @@ export default function SaveRoute() {
     setKey("master.route");
   }, [setKey]);
 
-  const CustomForm = useCustomForm<RouteForm>();
   const [form] = Form.useForm<RouteForm>();
   const province = Form.useWatch("province", form);
 
@@ -67,8 +71,7 @@ export default function SaveRoute() {
   const [cityOptions] = useAction(getCityOptions, province);
 
   return (
-    <SaveLayout
-      CustomForm={CustomForm}
+    <SaveLayout<RouteForm>
       form={form}
       onSubmit={async (val) => {
         const err = await saveRoute(
@@ -89,22 +92,36 @@ export default function SaveRoute() {
       onCancel={() => router.replace("/master/route")}
       view={viewParam === "1"}
     >
-      <CustomForm.CreateDate />
-      <CustomForm.Code />
-      <CustomForm.Text
-        label="Province"
-        name="province"
-        autoCompletes={provinceOptions}
-        required
-      />
-      <CustomForm.Text
-        label="City"
-        name="city"
-        autoCompletes={cityOptions}
-        required
-      />
-      <CustomForm.Text label="Origin" name="origin" required />
-      <CustomForm.Text label="Destination" name="destination" required />
+      <Col span={12}>
+        <DatePicker label="Create Date" name="createDate" {...createDate} />
+      </Col>
+      <Col span={12}>
+        <Input label="Code" name="code" disabled />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="Province"
+          name="province"
+          options={provinceOptions}
+          rules={[requiredRule]}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <AutoComplete
+          label="City"
+          name="city"
+          options={cityOptions}
+          rules={[requiredRule]}
+          filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}>
+        <Input label="Origin" name="origin" rules={[requiredRule]} />
+      </Col>
+      <Col span={12}>
+        <Input label="Destination" name="destination" rules={[requiredRule]} />
+      </Col>
     </SaveLayout>
   );
 }
