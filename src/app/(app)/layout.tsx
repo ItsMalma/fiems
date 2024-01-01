@@ -52,6 +52,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/priceVendor",
     title: "Price Vendor",
   },
+  "master.priceShipping": {
+    url: "/master/priceShipping",
+    title: "Price Shipping",
+  },
 };
 
 export default function AppLayout({ children }: React.PropsWithChildren) {
@@ -168,8 +172,8 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
                   icon: <CarOutlined />,
                 },
                 {
-                  key: "priceFactory",
-                  label: "Price Factory",
+                  key: "priceShipper",
+                  label: "Price Shipper",
                   icon: <DollarOutlined />,
                 },
                 {

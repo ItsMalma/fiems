@@ -45,9 +45,10 @@ model Customer {
   updateDate DateTime      @updatedAt
   status     Boolean       @default(true)
 
-  Vehicle     Vehicle[]
-  Vessel      Vessel[]
-  PriceVendor PriceVendor[]
+  Vehicle       Vehicle[]
+  Vessel        Vessel[]
+  PriceVendor   PriceVendor[]
+  PriceShipping PriceShipping[]
 
   @@map("customers")
 }
@@ -62,7 +63,8 @@ model Route {
   updateDate  DateTime @updatedAt
   status      Boolean  @default(true)
 
-  PriceVendorDetail PriceVendorDetail[]
+  PriceVendorDetail   PriceVendorDetail[]
+  PriceShippingDetail PriceShippingDetail[]
 
   @@map("routes")
 }
@@ -82,7 +84,8 @@ model Port {
   updateDate DateTime @updatedAt
   status     Boolean  @default(true)
 
-  PriceVendorDetail PriceVendorDetail[]
+  PriceVendorDetail   PriceVendorDetail[]
+  PriceShippingDetail PriceShippingDetail[]
 
   @@map("ports")
 }
@@ -180,4 +183,46 @@ model PriceVendorDetail {
   status        Boolean     @default(true)
 
   @@map("priceVendorDetails")
+}
+
+model PriceShipping {
+  id                 String                @id @default(auto()) @map("_id") @db.ObjectId
+  shipping           Customer              @relation(fields: [shippingCode], references: [code])
+  shippingCode       String
+  effectiveStartDate DateTime
+  effectiveEndDate   DateTime
+  details            PriceShippingDetail[]
+  createDate         DateTime              @default(now())
+  updateDate         DateTime              @updatedAt
+
+  @@map("priceShippings")
+}
+
+model PriceShippingDetail {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  priceShipping   PriceShipping @relation(fields: [priceShippingId], references: [id])
+  priceShippingId String        @db.ObjectId
+  route           Route         @relation(fields: [routeCode], references: [code])
+  routeCode       String
+  containerSize   String
+  containerType   String
+  serviceType     String
+  port            Port          @relation(fields: [portCode], references: [code])
+  portCode        String
+  freight         Float
+  thcOPT          Float
+  thcOPP          Float
+  adminBL         Float
+  cleaning        Float
+  alihKapal       Float
+  materai         Float
+  lolo            Float
+  segel           Float
+  rc              Float
+  lss             Float
+  createDate      DateTime      @default(now())
+  updateDate      DateTime      @updatedAt
+  status          Boolean       @default(true)
+
+  @@map("priceShippingDetails")
 }

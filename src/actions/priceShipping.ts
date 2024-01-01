@@ -6,7 +6,7 @@ import {
   containerTypes,
   serviceTypes,
 } from "@/lib/utils/consts";
-import { PriceVendor, PriceVendorDetail } from "@prisma/client";
+import { PriceShipping, PriceShippingDetail } from "@prisma/client";
 import dayjs from "dayjs";
 import { FieldData } from "rc-field-form/es/interface";
 import { getCustomer } from "./customer";
@@ -14,12 +14,12 @@ import { handleError } from "./error";
 import { getPort } from "./port";
 import { getRoute } from "./route";
 
-export type PriceVendorDetailDTO = {
+export type PriceShippingDetailDTO = {
   id: string;
-  priceVendorId: string;
-  priceVendor: {
-    vendorCode: string;
-    vendorName: string;
+  priceShippingId: string;
+  priceShipping: {
+    shippingCode: string;
+    shippingName: string;
     effectiveStartDate: Date;
     effectiveEndDate: Date;
   };
@@ -30,127 +30,143 @@ export type PriceVendorDetailDTO = {
   serviceType: string;
   portCode: string;
   portName: string;
-  trackingRate: number;
-  buruh: number;
+  freight: number;
   thcOPT: number;
   thcOPP: number;
   adminBL: number;
   cleaning: number;
+  alihKapal: number;
   materai: number;
+  lolo: number;
+  segel: number;
+  rc: number;
+  lss: number;
   grandTotal: number;
   createDate: Date;
   status: boolean;
 };
 
-export type PriceVendorDTO = {
+export type PriceShippingDTO = {
   id: string;
-  vendorCode: string;
-  vendorName: string;
-  details: PriceVendorDetailDTO[];
+  shippingCode: string;
+  shippingName: string;
+  details: PriceShippingDetailDTO[];
   effectiveStartDate: Date;
   effectiveEndDate: Date;
   createDate: Date;
   status: boolean;
 };
 
-export type PriceVendorDetailInput = {
+export type PriceShippingDetailInput = {
   id?: string;
   route: string;
   containerSize: string;
   containerType: string;
   serviceType: string;
   port: string;
-  trackingRate: number;
-  buruh: number;
+  freight: number;
   thcOPT: number;
   thcOPP: number;
   adminBL: number;
   cleaning: number;
+  alihKapal: number;
   materai: number;
+  lolo: number;
+  segel: number;
+  rc: number;
+  lss: number;
 };
 
-export type PriceVendorInput = {
-  vendor: string;
+export type PriceShippingInput = {
+  shipping: string;
   effectiveStartDate: Date;
   effectiveEndDate: Date;
-  details: PriceVendorDetailInput[];
+  details: PriceShippingDetailInput[];
 };
 
 async function mapDetail(
-  priceVendorDetail: PriceVendorDetail
-): Promise<PriceVendorDetailDTO> {
-  const priceVendor = await prisma.priceVendor.findUnique({
+  priceShippingDetail: PriceShippingDetail
+): Promise<PriceShippingDetailDTO> {
+  const priceShipping = await prisma.priceShipping.findUnique({
     where: {
-      id: priceVendorDetail.priceVendorId,
+      id: priceShippingDetail.priceShippingId,
     },
     include: {
-      vendor: true,
+      shipping: true,
     },
   });
-  const route = await getRoute(priceVendorDetail.routeCode);
-  const port = await getPort(priceVendorDetail.portCode);
+  const route = await getRoute(priceShippingDetail.routeCode);
+  const port = await getPort(priceShippingDetail.portCode);
 
   return {
-    id: priceVendorDetail.id,
-    priceVendorId: priceVendorDetail.priceVendorId,
-    priceVendor: {
-      vendorCode: priceVendor?.vendorCode ?? "",
-      vendorName: priceVendor?.vendor.name ?? "",
-      effectiveStartDate: priceVendor?.effectiveStartDate ?? new Date(),
-      effectiveEndDate: priceVendor?.effectiveEndDate ?? new Date(),
+    id: priceShippingDetail.id,
+    priceShippingId: priceShippingDetail.priceShippingId,
+    priceShipping: {
+      shippingCode: priceShipping?.shippingCode ?? "",
+      shippingName: priceShipping?.shipping.name ?? "",
+      effectiveStartDate: priceShipping?.effectiveStartDate ?? new Date(),
+      effectiveEndDate: priceShipping?.effectiveEndDate ?? new Date(),
     },
     routeCode: route?.code ?? "",
     routeDescription: route ? `${route.origin} - ${route.destination}` : "",
-    containerSize: priceVendorDetail.containerSize,
-    containerType: priceVendorDetail.containerType,
-    serviceType: priceVendorDetail.serviceType,
+    containerSize: priceShippingDetail.containerSize,
+    containerType: priceShippingDetail.containerType,
+    serviceType: priceShippingDetail.serviceType,
     portCode: port?.code ?? "",
     portName: port?.name ?? "",
-    trackingRate: priceVendorDetail.trackingRate,
-    buruh: priceVendorDetail.buruh,
-    thcOPT: priceVendorDetail.thcOPT,
-    thcOPP: priceVendorDetail.thcOPP,
-    adminBL: priceVendorDetail.adminBL,
-    cleaning: priceVendorDetail.cleaning,
-    materai: priceVendorDetail.materai,
+    freight: priceShippingDetail.freight,
+    thcOPT: priceShippingDetail.thcOPT,
+    thcOPP: priceShippingDetail.thcOPP,
+    adminBL: priceShippingDetail.adminBL,
+    cleaning: priceShippingDetail.cleaning,
+    alihKapal: priceShippingDetail.alihKapal,
+    materai: priceShippingDetail.materai,
+    lolo: priceShippingDetail.lolo,
+    segel: priceShippingDetail.segel,
+    rc: priceShippingDetail.rc,
+    lss: priceShippingDetail.lss,
     grandTotal:
-      priceVendorDetail.trackingRate +
-      priceVendorDetail.buruh +
-      priceVendorDetail.thcOPT +
-      priceVendorDetail.thcOPP +
-      priceVendorDetail.adminBL +
-      priceVendorDetail.cleaning +
-      priceVendorDetail.materai,
-    createDate: priceVendorDetail.createDate,
+      priceShippingDetail.freight +
+      priceShippingDetail.thcOPT +
+      priceShippingDetail.thcOPP +
+      priceShippingDetail.adminBL +
+      priceShippingDetail.cleaning +
+      priceShippingDetail.alihKapal +
+      priceShippingDetail.materai +
+      priceShippingDetail.lolo +
+      priceShippingDetail.segel +
+      priceShippingDetail.rc +
+      priceShippingDetail.lss,
+    createDate: priceShippingDetail.createDate,
     status:
-      priceVendorDetail.status &&
-      (await getPriceVendorStatus(priceVendorDetail.priceVendorId)) &&
+      priceShippingDetail.status &&
+      (await getPriceShippingStatus(priceShippingDetail.priceShippingId)) &&
       (route?.status ?? true) &&
       (port?.status ?? true),
   };
 }
 
-async function map(priceVendor: PriceVendor): Promise<PriceVendorDTO> {
-  const vendor = await getCustomer(priceVendor.vendorCode);
-  const details = await getPriceVendorDetails(priceVendor.id);
+async function map(priceShipping: PriceShipping): Promise<PriceShippingDTO> {
+  const shipping = await getCustomer(priceShipping.shippingCode);
+  const details = await getPriceShippingDetails(priceShipping.id);
 
   return {
-    id: priceVendor.id,
-    vendorCode: priceVendor.vendorCode,
-    vendorName: vendor?.name ?? "",
+    id: priceShipping.id,
+    shippingCode: priceShipping.shippingCode,
+    shippingName: shipping?.name ?? "",
     details: details,
-    effectiveStartDate: priceVendor.effectiveStartDate,
-    effectiveEndDate: priceVendor.effectiveEndDate,
-    createDate: priceVendor.createDate,
+    effectiveStartDate: priceShipping.effectiveStartDate,
+    effectiveEndDate: priceShipping.effectiveEndDate,
+    createDate: priceShipping.createDate,
     status:
-      dayjs().isAfter(priceVendor.effectiveStartDate) &&
-      dayjs().isBefore(priceVendor.effectiveEndDate) &&
-      (vendor?.status ?? true),
+      dayjs().isAfter(priceShipping.effectiveStartDate) &&
+      dayjs().isBefore(priceShipping.effectiveEndDate) &&
+      (shipping?.status ?? true),
   };
 }
 
-export async function savePriceVendor(
-  input: PriceVendorInput,
+export async function savePriceShipping(
+  input: PriceShippingInput,
   id: string | null = null
 ) {
   try {
@@ -158,10 +174,10 @@ export async function savePriceVendor(
     for (let i = 0; i < input.details.length; i++) {
       const inputDetail = input.details[i];
       if (
-        (await prisma.priceVendorDetail.findFirst({
+        (await prisma.priceShippingDetail.findFirst({
           where: {
             id: { not: inputDetail.id },
-            priceVendor: { vendorCode: input.vendor },
+            priceShipping: { shippingCode: input.shipping },
             routeCode: inputDetail.route,
             containerSize: inputDetail.containerSize,
             containerType: inputDetail.containerType,
@@ -179,8 +195,11 @@ export async function savePriceVendor(
             otherInputDetail.port === inputDetail.port
         )
       ) {
-        if (!fieldDatas.find((fieldData) => fieldData.name === "vendor")) {
-          fieldDatas.push({ name: "vendor", errors: ["Sudah ada yang sama"] });
+        if (!fieldDatas.find((fieldData) => fieldData.name === "shipping")) {
+          fieldDatas.push({
+            name: "shipping",
+            errors: ["Sudah ada yang sama"],
+          });
         }
         fieldDatas.push({
           name: ["details", i, "route"],
@@ -208,9 +227,9 @@ export async function savePriceVendor(
     if (fieldDatas.length > 0) return fieldDatas;
 
     if (!id) {
-      await prisma.priceVendor.create({
+      await prisma.priceShipping.create({
         data: {
-          vendorCode: input.vendor,
+          shippingCode: input.shipping,
           effectiveStartDate: input.effectiveStartDate,
           effectiveEndDate: input.effectiveEndDate,
           createDate: new Date(),
@@ -222,13 +241,17 @@ export async function savePriceVendor(
                 containerType: inputDetail.containerType,
                 serviceType: inputDetail.serviceType,
                 portCode: inputDetail.port,
-                trackingRate: inputDetail.trackingRate,
-                buruh: inputDetail.buruh,
+                freight: inputDetail.freight,
                 thcOPT: inputDetail.thcOPT,
                 thcOPP: inputDetail.thcOPP,
                 adminBL: inputDetail.adminBL,
                 cleaning: inputDetail.cleaning,
+                alihKapal: inputDetail.alihKapal,
                 materai: inputDetail.materai,
+                lolo: inputDetail.lolo,
+                segel: inputDetail.segel,
+                rc: inputDetail.rc,
+                lss: inputDetail.lss,
                 createDate: new Date(),
                 status: true,
               };
@@ -238,29 +261,29 @@ export async function savePriceVendor(
       });
     } else {
       await prisma.$transaction(async (tx) => {
-        const priceVendorDetails = await tx.priceVendorDetail.findMany({
+        const priceShippigDetails = await tx.priceShippingDetail.findMany({
           where: {
-            priceVendorId: id,
+            priceShippingId: id,
           },
         });
 
-        for (const priceVendorDetail of priceVendorDetails) {
+        for (const priceShippingDetail of priceShippigDetails) {
           if (
             !input.details.find(
-              (inputDetail) => inputDetail.id === priceVendorDetail.id
+              (inputDetail) => inputDetail.id === priceShippingDetail.id
             )
           ) {
-            await tx.priceVendorDetail.delete({
-              where: { id: priceVendorDetail.id },
+            await tx.priceShippingDetail.delete({
+              where: { id: priceShippingDetail.id },
             });
           }
         }
 
         for (const inputDetail of input.details) {
           if (
-            priceVendorDetails.find((detail) => detail.id === inputDetail.id)
+            priceShippigDetails.find((detail) => detail.id === inputDetail.id)
           ) {
-            await tx.priceVendorDetail.update({
+            await tx.priceShippingDetail.update({
               where: { id: inputDetail.id },
               data: {
                 routeCode: inputDetail.route,
@@ -268,31 +291,39 @@ export async function savePriceVendor(
                 containerType: inputDetail.containerType,
                 serviceType: inputDetail.serviceType,
                 portCode: inputDetail.port,
-                trackingRate: inputDetail.trackingRate,
-                buruh: inputDetail.buruh,
+                freight: inputDetail.freight,
                 thcOPT: inputDetail.thcOPT,
                 thcOPP: inputDetail.thcOPP,
                 adminBL: inputDetail.adminBL,
                 cleaning: inputDetail.cleaning,
+                alihKapal: inputDetail.alihKapal,
                 materai: inputDetail.materai,
+                lolo: inputDetail.lolo,
+                segel: inputDetail.segel,
+                rc: inputDetail.rc,
+                lss: inputDetail.lss,
               },
             });
           } else {
-            await tx.priceVendorDetail.create({
+            await tx.priceShippingDetail.create({
               data: {
-                priceVendorId: id,
+                priceShippingId: id,
                 routeCode: inputDetail.route,
                 containerSize: inputDetail.containerSize,
                 containerType: inputDetail.containerType,
                 serviceType: inputDetail.serviceType,
                 portCode: inputDetail.port,
-                trackingRate: inputDetail.trackingRate,
-                buruh: inputDetail.buruh,
+                freight: inputDetail.freight,
                 thcOPT: inputDetail.thcOPT,
                 thcOPP: inputDetail.thcOPP,
                 adminBL: inputDetail.adminBL,
                 cleaning: inputDetail.cleaning,
+                alihKapal: inputDetail.alihKapal,
                 materai: inputDetail.materai,
+                lolo: inputDetail.lolo,
+                segel: inputDetail.segel,
+                rc: inputDetail.rc,
+                lss: inputDetail.lss,
                 createDate: new Date(),
                 status: true,
               },
@@ -300,12 +331,12 @@ export async function savePriceVendor(
           }
         }
 
-        return await tx.priceVendor.update({
+        return await tx.priceShipping.update({
           where: {
             id,
           },
           data: {
-            vendorCode: input.vendor,
+            shippingCode: input.shipping,
             effectiveStartDate: input.effectiveStartDate,
             effectiveEndDate: input.effectiveEndDate,
           },
@@ -317,61 +348,64 @@ export async function savePriceVendor(
   }
 }
 
-export async function getAllPriceVendors() {
-  const priceVendors = await prisma.priceVendor.findMany();
-  return Promise.all(priceVendors.map(map));
+export async function getAllPriceShippings() {
+  const priceShippings = await prisma.priceShipping.findMany();
+  return Promise.all(priceShippings.map(map));
 }
 
-export async function getAllPriceVendorDetails() {
-  const priceVendorDetails = await prisma.priceVendorDetail.findMany();
-  return Promise.all(priceVendorDetails.map(mapDetail));
+export async function getAllPriceShippingDetails() {
+  const priceShippingDetails = await prisma.priceShippingDetail.findMany();
+  return Promise.all(priceShippingDetails.map(mapDetail));
 }
 
-export async function getPriceVendor(
+export async function getPriceShipping(
   id: string,
   { onlyActiveDetail }: { onlyActiveDetail?: boolean }
 ) {
-  const priceVendor = await prisma.priceVendor.findUnique({
+  const priceShipping = await prisma.priceShipping.findUnique({
     where: {
       id,
     },
   });
 
-  if (!priceVendor) {
+  if (!priceShipping) {
     return null;
   }
 
-  const mappedPriceVendor = await map(priceVendor);
+  const mappedPriceShipping = await map(priceShipping);
   if (onlyActiveDetail) {
-    mappedPriceVendor.details = mappedPriceVendor.details.filter(
+    mappedPriceShipping.details = mappedPriceShipping.details.filter(
       (detail) => detail.status
     );
   }
 
-  return mappedPriceVendor;
+  return mappedPriceShipping;
 }
 
-async function getPriceVendorStatus(id: string) {
-  const priceVendor = await prisma.priceVendor.findUnique({
+async function getPriceShippingStatus(id: string) {
+  const priceShipping = await prisma.priceShipping.findUnique({
     where: {
       id,
     },
   });
-  if (!priceVendor) {
+  if (!priceShipping) {
     return false;
   }
 
-  const vendor = await getCustomer(priceVendor.vendorCode);
+  const shipping = await getCustomer(priceShipping.shippingCode);
 
   return (
-    dayjs().isAfter(priceVendor.effectiveStartDate) &&
-    dayjs().isBefore(priceVendor.effectiveEndDate) &&
-    (vendor?.status ?? true)
+    dayjs().isAfter(priceShipping.effectiveStartDate) &&
+    dayjs().isBefore(priceShipping.effectiveEndDate) &&
+    (shipping?.status ?? true)
   );
 }
 
-export async function setPriceVendorDetailStatus(id: string, status: boolean) {
-  await prisma.priceVendorDetail.update({
+export async function setPriceShippingDetailStatus(
+  id: string,
+  status: boolean
+) {
+  await prisma.priceShippingDetail.update({
     where: {
       id,
     },
@@ -381,17 +415,17 @@ export async function setPriceVendorDetailStatus(id: string, status: boolean) {
   });
 }
 
-export async function getPriceVendorDetails(priceVendorId: string) {
-  const priceVendorDetails = await prisma.priceVendorDetail.findMany({
+export async function getPriceShippingDetails(priceShippingId: string) {
+  const priceShippingDetails = await prisma.priceShippingDetail.findMany({
     where: {
-      priceVendorId: priceVendorId,
+      priceShippingId,
     },
   });
 
-  return Promise.all(priceVendorDetails.map(mapDetail));
+  return Promise.all(priceShippingDetails.map(mapDetail));
 }
 
-export async function getPriceVendorContainerSizeOptions() {
+export async function getPriceShippingContainerSizeOptions() {
   return containerSizes.map((containerSize) => {
     return {
       label: containerSize,
@@ -400,7 +434,7 @@ export async function getPriceVendorContainerSizeOptions() {
   });
 }
 
-export async function getPriceVendorContainerTypeOptions() {
+export async function getPriceShippingContainerTypeOptions() {
   return containerTypes.map((containerType) => {
     return {
       label: containerType,
@@ -409,7 +443,7 @@ export async function getPriceVendorContainerTypeOptions() {
   });
 }
 
-export async function getPriceVendorServiceTypeOptions() {
+export async function getPriceShippingServiceTypeOptions() {
   return serviceTypes.map((serviceType) => {
     return {
       label: serviceType,
