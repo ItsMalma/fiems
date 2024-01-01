@@ -182,6 +182,8 @@ model PriceVendorDetail {
   updateDate    DateTime    @updatedAt
   status        Boolean     @default(true)
 
+  UangJalan UangJalan[]
+
   @@map("priceVendorDetails")
 }
 
@@ -225,4 +227,21 @@ model PriceShippingDetail {
   status          Boolean       @default(true)
 
   @@map("priceShippingDetails")
+}
+
+model UangJalan {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  priceVendorDetail   PriceVendorDetail @relation(fields: [priceVendorDetailId], references: [id])
+  priceVendorDetailId String            @db.ObjectId
+  truckType           String
+  bbm                 Float
+  tol                 Float
+  biayaBuruh          Float
+  meal                Float
+  lainLain            Float
+  createDate          DateTime          @default(now())
+  updateDate          DateTime          @updatedAt
+  status              Boolean           @default(true)
+
+  @@map("uangJalan")
 }

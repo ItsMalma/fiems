@@ -351,6 +351,20 @@ export async function getPriceVendor(
   return mappedPriceVendor;
 }
 
+export async function getPriceVendorDetail(id: string) {
+  const priceVendorDetail = await prisma.priceVendorDetail.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!priceVendorDetail) {
+    return null;
+  }
+
+  return await mapDetail(priceVendorDetail);
+}
+
 async function getPriceVendorStatus(id: string) {
   const priceVendor = await prisma.priceVendor.findUnique({
     where: {
