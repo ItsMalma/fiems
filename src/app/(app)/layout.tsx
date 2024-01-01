@@ -4,7 +4,10 @@ import { useMenu } from "@/stores/useMenu";
 import {
   BarChartOutlined,
   BorderOutlined,
+  CalculatorOutlined,
+  CalendarOutlined,
   CarOutlined,
+  CarryOutOutlined,
   DatabaseOutlined,
   DollarOutlined,
   EnvironmentFilled,
@@ -228,7 +231,28 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
               key: "marketing",
               label: "Marketing",
               icon: <BarChartOutlined />,
-              children: [],
+              children: [
+                {
+                  key: "priceCalculation",
+                  label: "Price Calculation",
+                  icon: <CalculatorOutlined />,
+                },
+                {
+                  key: "formQuotation",
+                  label: "Form Quotation",
+                  icon: <DollarOutlined />,
+                },
+                {
+                  key: "inquiryContainer",
+                  label: "Inquiry Container",
+                  icon: <CarryOutOutlined />,
+                },
+                {
+                  key: "vesselSchedule",
+                  label: "Vessel Schedule",
+                  icon: <CalendarOutlined />,
+                },
+              ],
             },
           ]}
           selectedKeys={selectedKeys.key}
