@@ -248,11 +248,33 @@ model UangJalan {
 
 model ProductCategory {
   reff       String   @id @map("_id")
-  name       String
+  name       String   @unique
   kendaraan  Boolean  @default(false)
   createDate DateTime @default(now())
   updateDate DateTime @updatedAt
   status     Boolean  @default(true)
 
+  Product Product[]
+
   @@map("productCategories")
+}
+
+enum ProductType {
+  Product
+  SparePart
+  ATK
+}
+
+model Product {
+  skuCode      String           @id @map("_id")
+  type         ProductType
+  category     ProductCategory? @relation(fields: [categoryReff], references: [reff])
+  categoryReff String?
+  name         String           @unique
+  satuan       String
+  createDate   DateTime         @default(now())
+  updateDate   DateTime         @updatedAt
+  status       Boolean          @default(true)
+
+  @@map("products")
 }

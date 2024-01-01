@@ -68,6 +68,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/productCategory",
     title: "Product Category",
   },
+  "master.product": {
+    url: "/master/product",
+    title: "Product",
+  },
 };
 
 export default function AppLayout({ children }: React.PropsWithChildren) {

@@ -30,3 +30,15 @@ export const serviceTypes = [
   "CY - Port",
   "CY - CY",
 ];
+
+export const productSatuan = [
+  "Carton",
+  "Pack",
+  "Kg",
+  "Pcs",
+  "Liter",
+  "Box",
+  "Pail",
+  "Unit",
+  "Karung",
+];
