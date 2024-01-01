@@ -245,3 +245,14 @@ model UangJalan {
 
   @@map("uangJalan")
 }
+
+model ProductCategory {
+  reff       String   @id @map("_id")
+  name       String
+  kendaraan  Boolean  @default(false)
+  createDate DateTime @default(now())
+  updateDate DateTime @updatedAt
+  status     Boolean  @default(true)
+
+  @@map("productCategories")
+}

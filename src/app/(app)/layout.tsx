@@ -60,6 +60,14 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/uangJalan",
     title: "Uang Jalan",
   },
+  "master.uangMuat": {
+    url: "/master/uangMuat",
+    title: "Uang Muat",
+  },
+  "master.productCategory": {
+    url: "/master/productCategory",
+    title: "Product Category",
+  },
 };
 
 export default function AppLayout({ children }: React.PropsWithChildren) {

@@ -178,3 +178,22 @@ export function inputColumn<RecordType extends object>(
     render: () => input,
   };
 }
+
+export function booleanColumn<RecordType extends object>(
+  key: KeyOf<RecordType>,
+  title?: string
+): ColumnType<RecordType> {
+  return {
+    title: title ?? camelToTitleCase(key as string),
+    dataIndex: key.split("."),
+    key: key as string,
+    render: (val) => (val ? "Ya" : "Tidak"),
+    filters: [
+      { text: "Ya", value: true },
+      { text: "Tidak", value: false },
+    ],
+    onFilter: (value, record) => {
+      return lodash.get(record, key) === value;
+    },
+  };
+}
