@@ -54,6 +54,7 @@ model Customer {
   TrackingAsalQuotationDetail   QuotationDetail[] @relation("trackingAsalVendor")
   TrackingTujuanQuotationDetail QuotationDetail[] @relation("trackingTujuanVendor")
   ShippingDetailQuotationDetail QuotationDetail[] @relation("shippingDetailShipping")
+  VesselSchedule                VesselSchedule[]
 
   @@map("customers")
 }
@@ -94,9 +95,11 @@ model Port {
   updateDate DateTime @updatedAt
   status     Boolean  @default(true)
 
-  PriceVendorDetail   PriceVendorDetail[]
-  PriceShippingDetail PriceShippingDetail[]
-  QuotationDetail     QuotationDetail[]
+  PriceVendorDetail             PriceVendorDetail[]
+  PriceShippingDetail           PriceShippingDetail[]
+  QuotationDetail               QuotationDetail[]
+  PortOriginVesselSchedule      VesselSchedule[]      @relation("portOrigin")
+  PortDestinationVesselSchedule VesselSchedule[]      @relation("portDestination")
 
   @@map("ports")
 }
@@ -155,6 +158,8 @@ model Vessel {
   createDate   DateTime @default(now())
   updateDate   DateTime @updatedAt
   status       Boolean  @default(true)
+
+  VesselSchedule VesselSchedule[]
 
   @@map("vessels")
 }
@@ -388,4 +393,26 @@ model QuotationDetail {
   status                     Boolean                        @default(true)
 
   @@map("quotationDetails")
+}
+
+model VesselSchedule {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  month               String
+  shipping            Customer @relation(fields: [shippingCode], references: [code])
+  shippingCode        String
+  vessel              Vessel   @relation(fields: [vesselId], references: [id])
+  vesselId            String   @db.ObjectId
+  voyage              String
+  quota               String
+  portOrigin          Port     @relation("portOrigin", fields: [portOriginCode], references: [code])
+  portOriginCode      String
+  portDestination     Port     @relation("portDestination", fields: [portDestinationCode], references: [code])
+  portDestinationCode String
+  openStackDate       DateTime
+  rcClosingDate       DateTime
+  rcClosingTime       DateTime
+  vesselClosingDate   DateTime
+  vesselClosingTime   DateTime
+  etd                 DateTime
+  eta                 DateTime
 }
