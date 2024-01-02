@@ -71,6 +71,47 @@ export function dateColumn<RecordType extends object>(
   };
 }
 
+export function timeColumn<RecordType extends object>(
+  key: KeyOf<RecordType>,
+  title?: string
+): ColumnType<RecordType> {
+  return {
+    title: title ?? camelToTitleCase(key as string),
+    dataIndex: key.split("."),
+    key: key as string,
+    render: (val) => (val ? dayjs(val).format("HH:mm") : "-"),
+    // filters: [
+    //   { text: "Today", value: "today" },
+    //   { text: "Yesterday", value: "yesterday" },
+    //   { text: "This Week", value: "thisWeek" },
+    //   { text: "This Month", value: "thisMonth" },
+    //   { text: "This Year", value: "thisYear" },
+    // ],
+    // onFilter: (value, record) => {
+    //   const date = dayjs(lodash.get(record, key) as string);
+    //   switch (value) {
+    //     case "today":
+    //       return date.isSame(dayjs(), "day");
+    //     case "yesterday":
+    //       return date.isSame(dayjs().subtract(1, "day"), "day");
+    //     case "thisWeek":
+    //       return date.isSame(dayjs(), "week");
+    //     case "thisMonth":
+    //       return date.isSame(dayjs(), "month");
+    //     case "thisYear":
+    //       return date.isSame(dayjs(), "year");
+    //     default:
+    //       return false;
+    //   }
+    // },
+    sorter: (a, b) => {
+      if (lodash.get(a, key) < lodash.get(b, key)) return -1;
+      if (lodash.get(a, key) > lodash.get(b, key)) return 1;
+      return 0;
+    },
+  };
+}
+
 export function statusColumn<RecordType extends object>(
   key: KeyOf<RecordType>,
   onChangeStatus: (checked: boolean, record: RecordType) => void,
