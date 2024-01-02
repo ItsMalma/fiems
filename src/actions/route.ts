@@ -10,6 +10,7 @@ export type RouteDTO = {
   city: string;
   origin: string;
   destination: string;
+  description: string;
   createDate: Date;
   status: boolean;
 };
@@ -28,10 +29,12 @@ function map(route: Route): RouteDTO {
     city: route.city,
     origin: route.origin,
     destination: route.destination,
+    description: `${route.origin} - ${route.destination}`,
     createDate: route.createDate,
     status: route.status,
   };
 }
+
 export async function getRouteCode() {
   const route = await prisma.route.findFirst({
     orderBy: {

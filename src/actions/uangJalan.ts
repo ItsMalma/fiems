@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { containerTypes } from "@/lib/utils/consts";
 import { UangJalan } from "@prisma/client";
 import lodash from "lodash";
 import { FieldData } from "rc-field-form/es/interface";
@@ -236,15 +235,6 @@ export async function getUangJalanContainerSizeOptions() {
     })),
     (opt) => opt.value
   );
-}
-
-export async function getPriceVendorContainerTypeOptions() {
-  return containerTypes.map((containerType) => {
-    return {
-      label: containerType,
-      value: containerType,
-    };
-  });
 }
 
 export async function getUangJalanTruckTypeOptions(vendor: string) {

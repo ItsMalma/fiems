@@ -75,6 +75,14 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/product",
     title: "Product",
   },
+  "marketing.priceCalculation": {
+    url: "/marketing/priceCalculation",
+    title: "Price Calculation",
+  },
+  "marketing.formQuotation": {
+    url: "/marketing/formQuotation",
+    title: "Form Quotation",
+  },
 };
 
 export default function AppLayout({ children }: React.PropsWithChildren) {

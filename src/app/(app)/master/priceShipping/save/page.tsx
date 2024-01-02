@@ -192,25 +192,6 @@ export default function SavePriceShipping() {
             fields={fields}
             add={add}
             remove={remove}
-            labels={[
-              "Route",
-              "Container Size",
-              "Container Type",
-              "Service Type",
-              "Port",
-              "Freight",
-              "THC OPT",
-              "THC OPP",
-              "Admin BL",
-              "Cleaning",
-              "Alih Kapal",
-              "Materai",
-              "LOLO",
-              "Segel",
-              "RC",
-              "LSS",
-              "Grand Total",
-            ]}
             disableDeleteOn={(name) => {
               return !!form.getFieldValue(["details", name, "id"]);
             }}

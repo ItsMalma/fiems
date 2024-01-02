@@ -45,10 +45,15 @@ model Customer {
   updateDate DateTime      @updatedAt
   status     Boolean       @default(true)
 
-  Vehicle       Vehicle[]
-  Vessel        Vessel[]
-  PriceVendor   PriceVendor[]
-  PriceShipping PriceShipping[]
+  Vehicle                       Vehicle[]
+  Vessel                        Vessel[]
+  PriceVendor                   PriceVendor[]
+  PriceShipping                 PriceShipping[]
+  Quotation                     Quotation[]
+  QuotationDetail               QuotationDetail[] @relation("deliveryTo")
+  TrackingAsalQuotationDetail   QuotationDetail[] @relation("trackingAsalVendor")
+  TrackingTujuanQuotationDetail QuotationDetail[] @relation("trackingTujuanVendor")
+  ShippingDetailQuotationDetail QuotationDetail[] @relation("shippingDetailShipping")
 
   @@map("customers")
 }
@@ -63,8 +68,12 @@ model Route {
   updateDate  DateTime @updatedAt
   status      Boolean  @default(true)
 
-  PriceVendorDetail   PriceVendorDetail[]
-  PriceShippingDetail PriceShippingDetail[]
+  PriceVendorDetail             PriceVendorDetail[]
+  PriceShippingDetail           PriceShippingDetail[]
+  QuotationDetail               QuotationDetail[]     @relation("route")
+  TrackingAsalQuotationDetail   QuotationDetail[]     @relation("trackingAsalRoute")
+  TrackingTujuanQuotationDetail QuotationDetail[]     @relation("trackingTujuanRoute")
+  ShippingDetailQuotationDetail QuotationDetail[]     @relation("shippingDetailRoute")
 
   @@map("routes")
 }
@@ -86,6 +95,7 @@ model Port {
 
   PriceVendorDetail   PriceVendorDetail[]
   PriceShippingDetail PriceShippingDetail[]
+  QuotationDetail     QuotationDetail[]
 
   @@map("ports")
 }
@@ -108,6 +118,7 @@ model Sales {
   createDate  DateTime         @default(now())
   updateDate  DateTime         @updatedAt
   status      Boolean          @default(true)
+  Quotation   Quotation[]
 
   @@map("sales")
 }
@@ -277,4 +288,85 @@ model Product {
   status       Boolean          @default(true)
 
   @@map("products")
+}
+
+model Quotation {
+  number             String            @id @map("_id")
+  serviceType        String
+  marketing          Sales             @relation(fields: [marketingCode], references: [code])
+  marketingCode      String
+  shipper            Customer          @relation(fields: [shipperCode], references: [code])
+  shipperCode        String
+  effectiveStartDate DateTime
+  effectiveEndDate   DateTime
+  details            QuotationDetail[]
+  createDate         DateTime          @default(now())
+  updateDate         DateTime          @updatedAt
+  status             Boolean           @default(true)
+
+  @@map("quotations")
+}
+
+enum QuotationDetailStatusPPFTZ {
+  Include
+  Exclude
+  TidakAda
+}
+
+enum QuotationDetailStatusInsurance {
+  Include
+  Exclude
+  TidakAda
+}
+
+enum QuotationDetailStatusPPN {
+  Include
+  Exclude
+}
+
+model QuotationDetail {
+  id                         String                         @id @default(auto()) @map("_id") @db.ObjectId
+  quotation                  Quotation                      @relation(fields: [quotationNumber], references: [number])
+  quotationNumber            String
+  route                      Route                          @relation("route", fields: [routeCode], references: [code])
+  routeCode                  String
+  deliveryTo                 Customer                       @relation("deliveryTo", fields: [deliveryToCode], references: [code])
+  deliveryToCode             String
+  port                       Port                           @relation(fields: [portCode], references: [code])
+  portCode                   String
+  containerSize              String
+  containerType              String
+  trackingAsalVendor         Customer                       @relation("trackingAsalVendor", fields: [trackingAsalVendorCode], references: [code])
+  trackingAsalVendorCode     String
+  trackingAsalRoute          Route                          @relation("trackingAsalRoute", fields: [trackingAsalRouteCode], references: [code])
+  trackingAsalRouteCode      String
+  trackingTujuanVendor       Customer                       @relation("trackingTujuanVendor", fields: [trackingTujuanVendorCode], references: [code])
+  trackingTujuanVendorCode   String
+  trackingTujuanRoute        Route                          @relation("trackingTujuanRoute", fields: [trackingTujuanRouteCode], references: [code])
+  trackingTujuanRouteCode    String
+  shippingDetailShipping     Customer                       @relation("shippingDetailShipping", fields: [shippingDetailShippingCode], references: [code])
+  shippingDetailShippingCode String
+  shippingDetailRoute        Route                          @relation("shippingDetailRoute", fields: [shippingDetailRouteCode], references: [code])
+  shippingDetailRouteCode    String
+  adminBL                    Float
+  cleaning                   Float
+  alihKapal                  Float
+  materai                    Float
+  biayaBuruh                 Float
+  stuffingDalam              Float
+  stuffingLuar               Float
+  biayaCetakRC               Float
+  biayaCetakIR               Float
+  statusPPFTZ                QuotationDetailStatusPPFTZ
+  ppftz                      Float?
+  statusInsurance            QuotationDetailStatusInsurance
+  insurance                  Float?
+  biayaAdminInsurance        Float?
+  statusPPN                  QuotationDetailStatusPPN
+  hargaJual                  Float
+  createDate                 DateTime                       @default(now())
+  updateDate                 DateTime                       @updatedAt
+  status                     Boolean                        @default(true)
+
+  @@map("quotationDetails")
 }

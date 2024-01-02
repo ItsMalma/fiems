@@ -1,7 +1,9 @@
 import { FormRule } from "antd";
 import { DatePickerProps } from "antx";
 import dayjs from "dayjs";
+import { FieldError } from "rc-field-form/es/interface";
 import { FilterFunc } from "rc-select/lib/Select";
+import React from "react";
 
 export const createDate: DatePickerProps = {
   disabled: true,
@@ -35,3 +37,9 @@ export const autoCompleteFilterOption: FilterFunc<any> = (
 ) => {
   return option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
 };
+
+export function fieldsErrorToNode(
+  fieldsError: FieldError[]
+): React.ReactNode[] {
+  return [fieldsError[0].errors[0]];
+}

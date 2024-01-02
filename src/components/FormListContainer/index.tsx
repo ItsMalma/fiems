@@ -13,7 +13,6 @@ import flattenChildren from "react-keyed-flatten-children";
 
 type FormListContainerProps = {
   children: (field: FormListFieldData) => React.ReactNode;
-  labels: string[];
 
   fields: FormListFieldData[];
   add: () => void;
