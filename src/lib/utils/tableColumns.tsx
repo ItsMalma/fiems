@@ -1,4 +1,4 @@
-import { EditFilled, EyeFilled } from "@ant-design/icons";
+import { CheckCircleFilled, EditFilled, EyeFilled } from "@ant-design/icons";
 import { Button, Space, Switch } from "antd";
 import { ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -74,7 +74,8 @@ export function dateColumn<RecordType extends object>(
 export function statusColumn<RecordType extends object>(
   key: KeyOf<RecordType>,
   onChangeStatus: (checked: boolean, record: RecordType) => void,
-  title?: string
+  title?: string,
+  readOnly?: boolean
 ): ColumnType<RecordType> {
   return {
     title: title ?? camelToTitleCase(key as string),
@@ -89,6 +90,7 @@ export function statusColumn<RecordType extends object>(
         }}
         checked={lodash.get(record, key) as boolean}
         onChange={(checked) => onChangeStatus(checked, record)}
+        disabled={readOnly}
       />
     ),
     filters: [
@@ -112,9 +114,11 @@ export function actionColumn<RecordType extends object>(
   {
     onView,
     onEdit,
+    onConfirm,
   }: {
     onView?: (record: RecordType) => void;
     onEdit?: (record: RecordType) => void;
+    onConfirm?: (record: RecordType) => void;
   },
   selectKey?: KeyOf<RecordType>
 ): ColumnType<RecordType> {
@@ -137,6 +141,14 @@ export function actionColumn<RecordType extends object>(
             type="primary"
             icon={<EditFilled />}
             onClick={() => onEdit(record)}
+          />
+        )}
+        {onConfirm && (!selectKey || lodash.get(record, selectKey)) && (
+          <Button
+            type="primary"
+            icon={<CheckCircleFilled />}
+            onClick={() => onConfirm(record)}
+            style={{ backgroundColor: "orange" }}
           />
         )}
       </Space>

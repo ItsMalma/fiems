@@ -1,5 +1,6 @@
 import {
   BackwardFilled,
+  CheckCircleFilled,
   CloseCircleFilled,
   SaveFilled,
 } from "@ant-design/icons";
@@ -11,6 +12,7 @@ type SaveLayoutProps<T extends object> = {
   form: FormInstance;
   onSubmit: (val: T) => void | Promise<void>;
   onCancel: () => void | Promise<void>;
+  onConfirm?: () => void | Promise<void>;
 
   init?: Partial<T>;
   isLoading?: boolean;
@@ -62,6 +64,15 @@ export default function SaveLayout<T extends object>({
             onClick={() => form.submit()}
           >
             Save
+          </Button>
+        )}
+        {props.onConfirm && (
+          <Button
+            type="primary"
+            icon={<CheckCircleFilled />}
+            onClick={props.onConfirm}
+          >
+            Confirm
           </Button>
         )}
         {props.view ? (

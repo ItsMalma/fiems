@@ -31,6 +31,8 @@ export default function FormQuotation() {
     setKey("marketing.formQuotation");
   }, [setKey]);
 
+  const [confirmed, setConfirmed] = React.useState(false);
+
   const [quotationDetails, refresh] = useAction(getAllQuotationDetails);
 
   const router = useRouter();
@@ -54,22 +56,36 @@ export default function FormQuotation() {
     moneyColumn("summaryDetail.hpp", "HPP"),
     moneyColumn("summaryDetail.hargaJual2", "Harga Jual"),
     moneyColumn("summaryDetail.profit", "Profit"),
-    statusColumn("status", async (checked, record) => {
-      await setQuotationDetailStatus(record.id, checked);
-      refresh();
-    }),
+    statusColumn(
+      "status",
+      async (checked, record) => {
+        await setQuotationDetailStatus(record.id, checked);
+        refresh();
+      },
+      "Status",
+      confirmed
+    ),
     actionColumn(
       {
         onView: (record) => {
           router.replace(
-            `/marketing/priceCalculation?number=${record["quotationNumber"]}&view=1`
+            `/marketing/priceCalculation?id=${record["id"]}&view=1`
           );
         },
-        onEdit: (record) => {
-          router.replace(
-            `/marketing/priceCalculation?number=${record["quotationNumber"]}`
-          );
-        },
+        onEdit: confirmed
+          ? undefined
+          : (record) => {
+              router.replace(
+                `/marketing/priceCalculation?number=${record["quotationNumber"]}`
+              );
+            },
+        onConfirm: confirmed
+          ? undefined
+          : (record) => {
+              router.replace(
+                `/marketing/priceCalculation?id=${record["id"]}&confirm=1`
+              );
+            },
       },
       "status"
     ),
@@ -87,13 +103,29 @@ export default function FormQuotation() {
               name="Form Quotation"
               saveUrl="/marketing/priceCalculation"
               columns={columns}
-              data={quotationDetails}
+              data={(quotationDetails ?? []).filter(
+                (quotationDetail) => !quotationDetail.isConfirmed
+              )}
               rowKey="id"
             />
           ),
         },
-        { key: "confirmed", label: "Confirmed" },
+        {
+          key: "confirmed",
+          label: "Confirmed",
+          children: (
+            <ReportLayout
+              name="Form Quotation"
+              columns={columns}
+              data={(quotationDetails ?? []).filter(
+                (quotationDetail) => quotationDetail.isConfirmed
+              )}
+              rowKey="id"
+            />
+          ),
+        },
       ]}
+      onChange={(key) => setConfirmed(key === "confirmed")}
     />
   );
 }

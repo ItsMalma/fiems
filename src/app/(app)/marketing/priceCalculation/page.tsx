@@ -9,7 +9,10 @@ import {
 } from "@/actions/priceVendor";
 import {
   QuotationDTO,
+  QuotationDetailDTO,
+  confirmQuotationDetail,
   getQuotation,
+  getQuotationDetail,
   getQuotationNumber,
   saveQuotation,
 } from "@/actions/quotation";
@@ -136,6 +139,61 @@ function dtoToForm(dto: QuotationDTO): PriceCalculationForm {
   };
 }
 
+function detailDTOToForm(dto: QuotationDetailDTO): PriceCalculationForm {
+  return {
+    createDate: dayjs(dto.createDate),
+    number: dto.quotationNumber,
+    serviceType: dto.quotation.serviceType,
+    marketing: dto.quotation.marketingCode,
+    shipper: dto.quotation.shipperCode,
+    effectiveDate: [
+      dayjs(dto.quotation.effectiveStartDate),
+      dayjs(dto.quotation.effectiveEndDate),
+    ],
+    details: [
+      {
+        id: dto.id,
+        route: dto.routeCode,
+        deliveryTo: dto.deliveryToCode,
+        port: dto.portCode,
+        containerSize: dto.containerSize,
+        containerType: dto.containerType,
+        trackingAsalVendor: dto.trackingAsal.vendorCode,
+        trackingAsalRoute: dto.trackingAsal.routeCode,
+        trackingAsalGrandTotal: dto.trackingAsal.price,
+        trackingTujuanVendor: dto.trackingTujuan.vendorCode,
+        trackingTujuanRoute: dto.trackingTujuan.routeCode,
+        trackingTujuanGrandTotal: dto.trackingTujuan.price,
+        shippingDetailShipping: dto.shippingDetail.shippingCode,
+        shippingDetailRoute: dto.shippingDetail.routeCode,
+        shippingDetailGrandTotal: dto.shippingDetail.price,
+        adminBL: dto.otherExpanses.adminBL,
+        cleaning: dto.otherExpanses.cleaning,
+        alihKapal: dto.otherExpanses.alihKapal,
+        materai: dto.otherExpanses.materai,
+        biayaBuruh: dto.otherExpanses.biayaBuruh,
+        stuffingDalam: dto.otherExpanses.stuffingDalam,
+        stuffingLuar: dto.otherExpanses.stuffingLuar,
+        biayaCetakRC: dto.otherExpanses.biayaCetakRC,
+        otherExpansesTotal: dto.otherExpanses.sumOff,
+        biayaCetakIR: dto.otherExpanses.biayaCetakIR,
+        statusPPFTZ: dto.summaryDetail.statusPPFTZ,
+        ppftz: dto.summaryDetail.ppftz,
+        statusInsurance: dto.summaryDetail.statusInsurance,
+        insurance: dto.summaryDetail.insurance,
+        biayaAdminInsurance: dto.summaryDetail.biayaAdminInsurance,
+        sumOffInsurance: dto.summaryDetail.sumOffInsurance,
+        hpp: dto.summaryDetail.hpp,
+        statusPPN: dto.summaryDetail.statusPPN,
+        hargaJual: dto.summaryDetail.hargaJual,
+        hargaJual2: dto.summaryDetail.hargaJual2,
+        hargaJual3: dto.summaryDetail.hargaJual3,
+        profit: dto.summaryDetail.profit,
+      },
+    ],
+  };
+}
+
 export default function PriceCalculation() {
   const { message } = App.useApp();
 
@@ -143,7 +201,9 @@ export default function PriceCalculation() {
 
   const searchParams = useSearchParams();
   const numberParam = searchParams.get("number");
+  const idParam = searchParams.get("id");
   const viewParam = searchParams.get("view");
+  const confirmParam = searchParams.get("confirm");
 
   const { setKey } = useMenu();
   React.useEffect(() => {
@@ -159,6 +219,13 @@ export default function PriceCalculation() {
       form.setFieldsValue({ number });
     }
   }, [number, form]);
+
+  const [quotationDetail] = useAction(getQuotationDetail, idParam);
+  React.useEffect(() => {
+    if (quotationDetail && form && !numberParam) {
+      form.setFieldsValue(detailDTOToForm(quotationDetail));
+    }
+  }, [quotationDetail, form, numberParam]);
 
   const [quotation] = useAction(getQuotation, numberParam, {
     onlyActiveDetail: true,
@@ -228,7 +295,12 @@ export default function PriceCalculation() {
         }
       }}
       onCancel={() => router.replace("/marketing/formQuotation")}
-      view={viewParam === "1"}
+      onConfirm={confirmParam ? async () => {
+        if (!idParam) return;
+        await confirmQuotationDetail(idParam);
+        router.replace("/marketing/formQuotation");
+      } : undefined}
+      view={viewParam === "1" || confirmParam === "1"}
     >
       <Col span={12}>
         <DatePicker label="Create Date" name="createDate" {...createDate} />

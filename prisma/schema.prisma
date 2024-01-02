@@ -364,6 +364,7 @@ model QuotationDetail {
   biayaAdminInsurance        Float?
   statusPPN                  QuotationDetailStatusPPN
   hargaJual                  Float
+  isConfirmed                Boolean                        @default(false)
   createDate                 DateTime                       @default(now())
   updateDate                 DateTime                       @updatedAt
   status                     Boolean                        @default(true)

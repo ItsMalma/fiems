@@ -28,6 +28,8 @@ export type QuotationDetailDTO = {
     marketingName: string;
     shipperCode: string;
     shipperName: string;
+    effectiveStartDate: Date;
+    effectiveEndDate: Date;
   };
   routeCode: string;
   routeDescription: string;
@@ -90,6 +92,7 @@ export type QuotationDetailDTO = {
     hargaJual3: number;
     profit: number;
   };
+  isConfirmed: boolean;
   createDate: Date;
   status: boolean;
 };
@@ -244,6 +247,8 @@ async function mapDetail(
       marketingName: quotation?.marketing?.name ?? "",
       shipperCode: quotation?.shipperCode ?? "",
       shipperName: quotation?.shipper?.name ?? "",
+      effectiveStartDate: quotation?.effectiveStartDate ?? new Date(),
+      effectiveEndDate: quotation?.effectiveEndDate ?? new Date(),
     },
     routeCode: quotationDetail.routeCode,
     routeDescription: route?.description ?? "",
@@ -309,6 +314,7 @@ async function mapDetail(
       hargaJual3,
       profit: hargaJual2 - hpp,
     },
+    isConfirmed: quotationDetail.isConfirmed,
     createDate: quotationDetail.createDate,
     status:
       quotationDetail.status &&
@@ -344,6 +350,17 @@ async function map(quotation: Quotation): Promise<QuotationDTO> {
       (marketing?.status ?? true) &&
       (shipper?.status ?? true),
   };
+}
+
+export async function confirmQuotationDetail(id: string) {
+  await prisma.quotationDetail.update({
+    where: {
+      id,
+    },
+    data: {
+      isConfirmed: true,
+    },
+  });
 }
 
 export async function getQuotationNumber() {

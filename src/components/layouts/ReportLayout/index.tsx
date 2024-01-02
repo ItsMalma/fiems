@@ -9,7 +9,7 @@ import React from "react";
 type ReportLayoutProps<DTO> = {
   name: string;
 
-  saveUrl: string;
+  saveUrl?: string;
 
   columns: ColumnsType<DTO>;
   data?: DTO[];
@@ -43,13 +43,15 @@ export default function ReportLayout<DTO extends object>(
           onChange={(e) => setSearch(e.target.value)}
         />
         <Flex>
-          <Button
-            type="primary"
-            icon={<FileAddOutlined />}
-            onClick={() => router.replace(props.saveUrl)}
-          >
-            {`Add New ${props.name}`}
-          </Button>
+          {props.saveUrl && (
+            <Button
+              type="primary"
+              icon={<FileAddOutlined />}
+              onClick={() => router.replace(props.saveUrl!)}
+            >
+              {`Add New ${props.name}`}
+            </Button>
+          )}
         </Flex>
       </Flex>
       <Flex
