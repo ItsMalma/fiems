@@ -51,6 +51,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/vessel",
     title: "Vessel",
   },
+  "master.priceShipper": {
+    url: "/master/priceShipper",
+    title: "Price Shipper",
+  },
   "master.priceVendor": {
     url: "/master/priceVendor",
     title: "Price Vendor",

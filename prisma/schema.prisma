@@ -68,6 +68,7 @@ model Route {
   updateDate  DateTime @updatedAt
   status      Boolean  @default(true)
 
+  PriceShipper                  PriceShipper[]
   PriceVendorDetail             PriceVendorDetail[]
   PriceShippingDetail           PriceShippingDetail[]
   QuotationDetail               QuotationDetail[]     @relation("route")
@@ -156,6 +157,21 @@ model Vessel {
   status       Boolean  @default(true)
 
   @@map("vessels")
+}
+
+model PriceShipper {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  quotation       Quotation @relation(fields: [quotationNumber], references: [number])
+  quotationNumber String
+  route           Route     @relation(fields: [routeCode], references: [code])
+  routeCode       String
+  containerSize   String
+  etcCost         Float
+  createDate      DateTime  @default(now())
+  updateDate      DateTime  @updatedAt
+  status          Boolean   @default(true)
+
+  @@map("priceShippers")
 }
 
 model PriceVendor {
@@ -303,6 +319,8 @@ model Quotation {
   createDate         DateTime          @default(now())
   updateDate         DateTime          @updatedAt
   status             Boolean           @default(true)
+
+  PriceShipper PriceShipper[]
 
   @@map("quotations")
 }
