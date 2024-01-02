@@ -415,4 +415,9 @@ model VesselSchedule {
   vesselClosingTime   DateTime
   etd                 DateTime
   eta                 DateTime
+  createDate          DateTime @default(now())
+  updateDate          DateTime @updatedAt
+  status              Boolean  @default(true)
+
+  @@map("vesselSchedules")
 }
