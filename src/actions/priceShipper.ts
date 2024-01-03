@@ -1,7 +1,12 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { PriceShipper } from "@prisma/client";
+import {
+  PriceShipper,
+  QuotationDetailStatusInsurance,
+  QuotationDetailStatusPPFTZ,
+  QuotationDetailStatusPPN,
+} from "@prisma/client";
 import lodash from "lodash";
 import { FieldData } from "rc-field-form/es/interface";
 import { handleError } from "./error";
@@ -24,10 +29,18 @@ export type PriceShipperDTO = {
   };
   routeCode: string;
   routeDescription: string;
+  deliveryToCode: string;
+  deliveryToName: string;
+  deliveryToCity: string;
   containerSize: string;
   containerType: string;
   portCode: string;
   portName: string;
+  statusPPFTZ: QuotationDetailStatusPPFTZ;
+  ppftz: number;
+  statusInsurance: QuotationDetailStatusInsurance;
+  insurance: number;
+  statusPPN: QuotationDetailStatusPPN;
   etcCost: number;
   hpp: number;
   hppAfterETCCost: number;
@@ -64,10 +77,19 @@ async function map(priceShipper: PriceShipper): Promise<PriceShipperDTO> {
     },
     routeCode: route?.code ?? "",
     routeDescription: route?.description ?? "",
+    deliveryToCode: quotationDetail?.deliveryToCode ?? "",
+    deliveryToName: quotationDetail?.deliveryToName ?? "",
+    deliveryToCity: quotationDetail?.deliveryToCity ?? "",
     containerSize: priceShipper.containerSize,
     containerType: quotationDetail?.containerType ?? "",
     portCode: quotationDetail?.portCode ?? "",
     portName: quotationDetail?.portName ?? "",
+    statusPPFTZ: quotationDetail?.summaryDetail.statusPPFTZ ?? "Include",
+    ppftz: quotationDetail?.summaryDetail.ppftz ?? 0,
+    statusInsurance:
+      quotationDetail?.summaryDetail.statusInsurance ?? "Include",
+    insurance: quotationDetail?.summaryDetail.sumOffInsurance ?? 0,
+    statusPPN: quotationDetail?.summaryDetail.statusPPN ?? "Include",
     etcCost: priceShipper.etcCost,
     hpp: quotationDetail?.summaryDetail.hpp ?? 0,
     hppAfterETCCost:

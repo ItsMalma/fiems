@@ -190,16 +190,20 @@ export async function getVesselSchedule(id: string) {
 
 export async function setVesselScheduleStatus(id: string, status: boolean) {
   const vesselSchedule = await getVesselSchedule(id);
-  if (
-    await prisma.vesselSchedule.findFirst({
-      where: {
-        shippingCode: vesselSchedule?.shippingCode,
-        vesselId: vesselSchedule?.vesselId,
-        voyage: vesselSchedule?.voyage,
-      },
-    })
-  ) {
-    return;
+
+  const otherVesselSchedule = await prisma.vesselSchedule.findFirst({
+    where: {
+      id: { not: id },
+      shippingCode: vesselSchedule?.shippingCode,
+      vesselId: vesselSchedule?.vesselId,
+      voyage: vesselSchedule?.voyage,
+    },
+  });
+  if (otherVesselSchedule) {
+    const mappedOtherVesselSchedule = await map(otherVesselSchedule);
+    if (mappedOtherVesselSchedule.status) {
+      return;
+    }
   }
 
   await prisma.vesselSchedule.update({

@@ -19,6 +19,7 @@ type FormListContainerProps = {
   remove: (index: number) => void;
   errors: React.ReactNode[];
 
+  disableAdd?: boolean;
   disableDeleteOn: (name: number) => boolean;
 };
 
@@ -83,7 +84,12 @@ export function FormListContainer(props: FormListContainerProps) {
       </Flex>
       <Form.ErrorList errors={props.errors} />
       <Space>
-        <Button type="primary" onClick={props.add} icon={<PlusCircleFilled />}>
+        <Button
+          type="primary"
+          onClick={props.add}
+          icon={<PlusCircleFilled />}
+          disabled={props.disableAdd}
+        >
           Add
         </Button>
       </Space>

@@ -76,12 +76,12 @@ export default function InquiryContainer() {
           );
         },
         onEdit: revised
-          ? undefined
-          : (record) => {
+          ? (record) => {
               router.replace(
-                `/marketing/inquiryContainer/save?number=${record["inquiryNumber"]}`
+                `/marketing/inquiryContainer/save?id=${record["id"]}`
               );
-            },
+            }
+          : undefined,
       },
       "status"
     ),

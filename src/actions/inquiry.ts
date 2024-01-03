@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { jobOrderTypes, typeOrders } from "@/lib/utils/consts";
 import {
   InquiryContainer,
   InquiryContainerDetail,
@@ -8,10 +9,11 @@ import {
   QuotationDetailStatusPPFTZ,
   QuotationDetailStatusPPN,
 } from "@prisma/client";
+import lodash from "lodash";
 import { FieldData } from "rc-field-form/es/interface";
 import { getCustomer } from "./customer";
 import { handleError } from "./error";
-import { getAllQuotationDetails } from "./quotation";
+import { getAllPriceShipper } from "./priceShipper";
 import { getSales } from "./sales";
 import { getAllVesselSchedule } from "./vesselSchedule";
 
@@ -23,8 +25,16 @@ export type InquiryDetailDTO = {
     salesName: string;
     shipperCode: string;
     shipperName: string;
+    shipperAddress: string;
+    shipperCity: string;
+    shipper: {
+      groupCode: string;
+      groupName: string;
+    };
     purchaseCode: string;
     purchaseName: string;
+    purchaseAddress: string;
+    purchaseCity: string;
   };
   jobOrderType: string;
   typeOrder: string;
@@ -103,12 +113,12 @@ async function mapDetail(
     },
     include: {
       sales: true,
-      shipper: true,
+      shipper: { include: { group: true } },
       purchase: true,
     },
   });
 
-  const quotationDetail = await getQuotationDetailByInquiry(
+  const priceShipper = await getPriceShipperByInquiry(
     inquiry?.shipperCode ?? "",
     inquiryDetail.routeCode,
     inquiryDetail.containerSize
@@ -128,26 +138,33 @@ async function mapDetail(
       salesName: inquiry?.sales?.name ?? "",
       shipperCode: inquiry?.shipperCode ?? "",
       shipperName: inquiry?.shipper?.name ?? "",
+      shipperAddress: inquiry?.shipper?.address ?? "",
+      shipperCity: inquiry?.shipper?.city ?? "",
+      shipper: {
+        groupCode: inquiry?.shipper?.groupCode ?? "",
+        groupName: inquiry?.shipper?.group?.name ?? "",
+      },
       purchaseCode: inquiry?.purchaseCode ?? "",
       purchaseName: inquiry?.purchase?.name ?? "",
+      purchaseAddress: inquiry?.purchase?.address ?? "",
+      purchaseCity: inquiry?.purchase?.city ?? "",
     },
     jobOrderType: inquiryDetail.jobOrderType,
     typeOrder: inquiryDetail.typeOrder,
     loadDate: inquiryDetail.loadDate,
-    deliveryToCode: quotationDetail?.deliveryToCode ?? "",
-    deliveryToName: quotationDetail?.deliveryToName ?? "",
-    deliveryToCity: quotationDetail?.deliveryToCity ?? "",
+    deliveryToCode: priceShipper?.deliveryToCode ?? "",
+    deliveryToName: priceShipper?.deliveryToName ?? "",
+    deliveryToCity: priceShipper?.deliveryToCity ?? "",
     routeCode: inquiryDetail.routeCode,
-    routeDescription: quotationDetail?.routeDescription ?? "",
+    routeDescription: priceShipper?.routeDescription ?? "",
     containerSize: inquiryDetail.containerSize,
-    containerType: quotationDetail?.containerType ?? "",
-    serviceType: quotationDetail?.quotation?.serviceType ?? "",
-    statusPPN: quotationDetail?.summaryDetail.statusPPN ?? "Include",
-    statusInsurance:
-      quotationDetail?.summaryDetail.statusInsurance ?? "Include",
-    insurance: quotationDetail?.summaryDetail.insurance ?? 0,
-    statusPPFTZ: quotationDetail?.summaryDetail.statusPPFTZ ?? "Include",
-    ppftz: quotationDetail?.summaryDetail.ppftz ?? 0,
+    containerType: priceShipper?.containerType ?? "",
+    serviceType: priceShipper?.quotation?.serviceType ?? "",
+    statusPPN: priceShipper?.statusPPN ?? "Include",
+    statusInsurance: priceShipper?.statusInsurance ?? "Include",
+    insurance: priceShipper?.insurance ?? 0,
+    statusPPFTZ: priceShipper?.statusPPFTZ ?? "Include",
+    ppftz: priceShipper?.ppftz ?? 0,
     shippingCode: inquiryDetail.shippingCode,
     shippingName: vesselSchedule?.shippingName ?? "",
     vesselId: inquiryDetail.vesselId,
@@ -159,7 +176,7 @@ async function mapDetail(
     status:
       inquiryDetail.status &&
       (await getInquiryStatus(inquiryDetail.inquiryNumber)) &&
-      (quotationDetail?.status ?? true) &&
+      (priceShipper?.status ?? true) &&
       (vesselSchedule?.status ?? true),
   };
 }
@@ -212,19 +229,19 @@ export async function getInquiryNumber() {
   );
 }
 
-export async function getQuotationDetailByInquiry(
+export async function getPriceShipperByInquiry(
   shipper: string,
   route: string,
   containerSize: string
 ) {
-  const quotationDetail = (await getAllQuotationDetails()).find(
-    (quotationDetail) =>
-      quotationDetail.quotation.shipperCode === shipper &&
-      quotationDetail.routeCode === route &&
-      quotationDetail.containerSize === containerSize
+  const priceShipper = (await getAllPriceShipper()).find(
+    (priceShipper) =>
+      priceShipper.quotation.shipperCode === shipper &&
+      priceShipper.routeCode === route &&
+      priceShipper.containerSize === containerSize
   );
 
-  return quotationDetail;
+  return priceShipper;
 }
 
 export async function getVesselScheduleByInquiry(
@@ -459,4 +476,112 @@ export async function getInquiryDetails(inquiryNumber: string) {
   });
 
   return Promise.all(inquiryDetails.map(mapDetail));
+}
+
+export async function getInquiryShipperOptions() {
+  return lodash.uniqBy(
+    (await getAllPriceShipper())
+      .filter((priceShipper) => priceShipper.status)
+      .map((priceShipper) => ({
+        label: priceShipper.quotation.shipperName,
+        value: priceShipper.quotation.shipperCode,
+      })),
+    (opt) => opt.value
+  );
+}
+
+export async function getJobOrderTypeOptions() {
+  return jobOrderTypes.map((jobOrderType) => ({
+    label: jobOrderType,
+    value: jobOrderType,
+  }));
+}
+
+export async function getTypeOrderOptions() {
+  return typeOrders.map((typeOrder) => ({
+    label: typeOrder,
+    value: typeOrder,
+  }));
+}
+
+export async function getInquiryRouteOptions(shipper: string) {
+  return lodash.uniqBy(
+    (await getAllPriceShipper())
+      .filter(
+        (priceShipper) =>
+          priceShipper.status && priceShipper.quotation.shipperCode === shipper
+      )
+      .map((priceShipper) => ({
+        label: priceShipper.routeDescription,
+        value: priceShipper.routeCode,
+      })),
+    (opt) => opt.value
+  );
+}
+
+export async function getInquiryContainerSizeOptions(
+  shipper: string,
+  route: string
+) {
+  return lodash.uniqBy(
+    (await getAllPriceShipper())
+      .filter(
+        (priceShipper) =>
+          priceShipper.status &&
+          priceShipper.quotation.shipperCode === shipper &&
+          priceShipper.routeCode === route
+      )
+      .map((priceShipper) => ({
+        label: priceShipper.containerSize,
+        value: priceShipper.containerSize,
+      })),
+    (opt) => opt.value
+  );
+}
+
+export async function getInquiryShippingOptions() {
+  return lodash.uniqBy(
+    (await getAllVesselSchedule())
+      .filter((vesselSchedule) => vesselSchedule.status)
+      .map((vesselSchedule) => ({
+        label: vesselSchedule.shippingName,
+        value: vesselSchedule.shippingCode,
+      })),
+    (opt) => opt.value
+  );
+}
+
+export async function getInquiryVesselOptions(shipping: string) {
+  return lodash.uniqBy(
+    (await getAllVesselSchedule())
+      .filter(
+        (vesselSchedule) =>
+          vesselSchedule.status && vesselSchedule.shippingCode === shipping
+      )
+      .map((vesselSchedule) => ({
+        label: vesselSchedule.vesselName,
+        value: vesselSchedule.vesselId,
+      })),
+    (opt) => opt.value
+  );
+}
+
+export async function getInquiryVoyageOptions(
+  shipping: string,
+  vessel: string
+) {
+  return lodash.uniqBy(
+    (await getAllVesselSchedule())
+      .filter(
+        (vesselSchedule) =>
+          vesselSchedule.status &&
+          vesselSchedule.shippingCode === shipping &&
+          vesselSchedule.vesselId === vessel
+      )
+      .map((vesselSchedule) => ({
+        label: vesselSchedule.voyage,
+        value: vesselSchedule.voyage,
+      })),
+    (opt) => opt.value
+  );
 }
