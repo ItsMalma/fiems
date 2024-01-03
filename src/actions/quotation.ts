@@ -41,6 +41,10 @@ export type QuotationDetailDTO = {
    * Shipper's Name
    */
   deliveryToName: string;
+  /**
+   * Shipper's City
+   */
+  deliveryToCity: string;
   portCode: string;
   portName: string;
   containerSize: string;
@@ -254,6 +258,7 @@ async function mapDetail(
     routeDescription: route?.description ?? "",
     deliveryToCode: quotationDetail.deliveryToCode,
     deliveryToName: deliveryTo?.name ?? "",
+    deliveryToCity: deliveryTo?.city ?? "",
     portCode: quotationDetail.portCode,
     portName: port?.name ?? "",
     containerSize: quotationDetail.containerSize,

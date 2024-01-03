@@ -50,11 +50,14 @@ model Customer {
   PriceVendor                   PriceVendor[]
   PriceShipping                 PriceShipping[]
   Quotation                     Quotation[]
-  QuotationDetail               QuotationDetail[] @relation("deliveryTo")
-  TrackingAsalQuotationDetail   QuotationDetail[] @relation("trackingAsalVendor")
-  TrackingTujuanQuotationDetail QuotationDetail[] @relation("trackingTujuanVendor")
-  ShippingDetailQuotationDetail QuotationDetail[] @relation("shippingDetailShipping")
+  QuotationDetail               QuotationDetail[]        @relation("deliveryTo")
+  TrackingAsalQuotationDetail   QuotationDetail[]        @relation("trackingAsalVendor")
+  TrackingTujuanQuotationDetail QuotationDetail[]        @relation("trackingTujuanVendor")
+  ShippingDetailQuotationDetail QuotationDetail[]        @relation("shippingDetailShipping")
   VesselSchedule                VesselSchedule[]
+  InquiryContainer              InquiryContainer[]       @relation("shipper")
+  PurchaseInquiryContainer      InquiryContainer[]       @relation("purchaseShipper")
+  InquiryContainerDetail        InquiryContainerDetail[]
 
   @@map("customers")
 }
@@ -72,10 +75,11 @@ model Route {
   PriceShipper                  PriceShipper[]
   PriceVendorDetail             PriceVendorDetail[]
   PriceShippingDetail           PriceShippingDetail[]
-  QuotationDetail               QuotationDetail[]     @relation("route")
-  TrackingAsalQuotationDetail   QuotationDetail[]     @relation("trackingAsalRoute")
-  TrackingTujuanQuotationDetail QuotationDetail[]     @relation("trackingTujuanRoute")
-  ShippingDetailQuotationDetail QuotationDetail[]     @relation("shippingDetailRoute")
+  QuotationDetail               QuotationDetail[]        @relation("route")
+  TrackingAsalQuotationDetail   QuotationDetail[]        @relation("trackingAsalRoute")
+  TrackingTujuanQuotationDetail QuotationDetail[]        @relation("trackingTujuanRoute")
+  ShippingDetailQuotationDetail QuotationDetail[]        @relation("shippingDetailRoute")
+  InquiryContainerDetail        InquiryContainerDetail[]
 
   @@map("routes")
 }
@@ -122,7 +126,9 @@ model Sales {
   createDate  DateTime         @default(now())
   updateDate  DateTime         @updatedAt
   status      Boolean          @default(true)
-  Quotation   Quotation[]
+
+  Quotation        Quotation[]
+  InquiryContainer InquiryContainer[]
 
   @@map("sales")
 }
@@ -159,7 +165,8 @@ model Vessel {
   updateDate   DateTime @updatedAt
   status       Boolean  @default(true)
 
-  VesselSchedule VesselSchedule[]
+  VesselSchedule         VesselSchedule[]
+  InquiryContainerDetail InquiryContainerDetail[]
 
   @@map("vessels")
 }
@@ -323,7 +330,6 @@ model Quotation {
   details            QuotationDetail[]
   createDate         DateTime          @default(now())
   updateDate         DateTime          @updatedAt
-  status             Boolean           @default(true)
 
   PriceShipper PriceShipper[]
 
@@ -420,4 +426,41 @@ model VesselSchedule {
   status              Boolean  @default(true)
 
   @@map("vesselSchedules")
+}
+
+model InquiryContainer {
+  number       String                   @id @map("_id")
+  sales        Sales                    @relation(fields: [salesCode], references: [code])
+  salesCode    String
+  shipper      Customer                 @relation("shipper", fields: [shipperCode], references: [code])
+  shipperCode  String
+  purchase     Customer                 @relation("purchaseShipper", fields: [purchaseCode], references: [code])
+  purchaseCode String
+  details      InquiryContainerDetail[]
+  createDate   DateTime                 @default(now())
+  updateDate   DateTime                 @updatedAt
+
+  @@map("inquiryContainers")
+}
+
+model InquiryContainerDetail {
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  inquiry       InquiryContainer @relation(fields: [inquiryNumber], references: [number])
+  inquiryNumber String
+  jobOrderType  String
+  typeOrder     String
+  loadDate      DateTime
+  route         Route            @relation(fields: [routeCode], references: [code])
+  routeCode     String
+  containerSize String
+  shipping      Customer         @relation(fields: [shippingCode], references: [code])
+  shippingCode  String
+  vessel        Vessel           @relation(fields: [vesselId], references: [id])
+  vesselId      String           @db.ObjectId
+  voyage        String
+  createDate    DateTime         @default(now())
+  updateDate    DateTime         @updatedAt
+  status        Boolean          @default(true)
+
+  @@map("inquiryContainerDetails")
 }

@@ -108,21 +108,16 @@ export async function saveVesselSchedule(
         voyage: input.voyage,
       },
     });
-    if (
-      vesselSchedule &&
-      !!id !== (vesselSchedule.id !== id) &&
-      vesselSchedule.status &&
-      (dayjs().isSame(vesselSchedule.etd) ||
-        dayjs().isAfter(vesselSchedule.etd)) &&
-      (dayjs().isSame(vesselSchedule.eta) ||
-        dayjs().isBefore(vesselSchedule.eta))
-    ) {
-      fieldDatas.push(
-        { name: "shipping", errors: ["Sudah ada yang sama"] },
-        { name: "vessel", errors: ["Sudah ada yang sama"] },
-        { name: "voyage", errors: ["Sudah ada yang sama"] }
-      );
-      return fieldDatas;
+    if (vesselSchedule) {
+      const mappedVesselSchedule = await map(vesselSchedule);
+      if (!!id !== (vesselSchedule.id !== id) && mappedVesselSchedule.status) {
+        fieldDatas.push(
+          { name: "shipping", errors: ["Sudah ada yang sama"] },
+          { name: "vessel", errors: ["Sudah ada yang sama"] },
+          { name: "voyage", errors: ["Sudah ada yang sama"] }
+        );
+        return fieldDatas;
+      }
     }
 
     if (!id) {

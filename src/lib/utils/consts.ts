@@ -58,3 +58,7 @@ export const months = [
   "November",
   "Desember",
 ];
+
+export const jobOrderTypes = ["Domestic", "International"];
+
+export const typeOrders = ["Muat", "Bongkaran"];
