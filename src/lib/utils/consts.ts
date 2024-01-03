@@ -42,3 +42,19 @@ export const productSatuan = [
   "Unit",
   "Karung",
 ];
+
+// fill with the month
+export const months = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];

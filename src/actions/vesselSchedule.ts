@@ -1,13 +1,15 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { months } from "@/lib/utils/consts";
 import { VesselSchedule } from "@prisma/client";
 import dayjs from "dayjs";
+import lodash from "lodash";
 import { FieldData } from "rc-field-form/es/interface";
 import { getCustomer } from "./customer";
 import { handleError } from "./error";
 import { getPort } from "./port";
-import { getVessel } from "./vessel";
+import { getAllVessels, getVessel } from "./vessel";
 
 export type VesselScheduleDTO = {
   id: string;
@@ -35,7 +37,6 @@ export type VesselScheduleDTO = {
 };
 
 export type VesselScheduleInput = {
-  id?: string;
   month: string;
   shipping: string;
   vessel: string;
@@ -193,6 +194,19 @@ export async function getVesselSchedule(id: string) {
 }
 
 export async function setVesselScheduleStatus(id: string, status: boolean) {
+  const vesselSchedule = await getVesselSchedule(id);
+  if (
+    await prisma.vesselSchedule.findFirst({
+      where: {
+        shippingCode: vesselSchedule?.shippingCode,
+        vesselId: vesselSchedule?.vesselId,
+        voyage: vesselSchedule?.voyage,
+      },
+    })
+  ) {
+    return;
+  }
+
   await prisma.vesselSchedule.update({
     where: {
       id,
@@ -201,4 +215,33 @@ export async function setVesselScheduleStatus(id: string, status: boolean) {
       status,
     },
   });
+}
+
+export async function getMonthOptions() {
+  return months.map((month) => ({
+    label: month,
+    value: month,
+  }));
+}
+
+export async function getVesselScheduleShippingOptions() {
+  return lodash.uniqBy(
+    (await getAllVessels()).map((vessel) => ({
+      label: vessel.shippingName,
+      value: vessel.shippingCode,
+    })),
+    (opt) => opt.value
+  );
+}
+
+export async function getVesselScheduleVesselOptions(shipping: string) {
+  return lodash.uniqBy(
+    (await getAllVessels())
+      .filter((vessel) => vessel.shippingCode === shipping)
+      .map((vessel) => ({
+        label: vessel.name,
+        value: vessel.id,
+      })),
+    (opt) => opt.value
+  );
 }
