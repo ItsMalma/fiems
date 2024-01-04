@@ -26,6 +26,7 @@ export type QuotationDetailDTO = {
     serviceType: string;
     marketingCode: string;
     marketingName: string;
+    marketingEmail: string;
     shipperCode: string;
     shipperName: string;
     effectiveStartDate: Date;
@@ -106,6 +107,7 @@ export type QuotationDTO = {
   serviceType: string;
   marketingCode: string;
   marketingName: string;
+  marketingEmail: string;
   shipperCode: string;
   shipperName: string;
   details: QuotationDetailDTO[];
@@ -249,6 +251,7 @@ async function mapDetail(
       serviceType: quotation?.serviceType ?? "",
       marketingCode: quotation?.marketingCode ?? "",
       marketingName: quotation?.marketing?.name ?? "",
+      marketingEmail: quotation?.marketing?.email ?? "",
       shipperCode: quotation?.shipperCode ?? "",
       shipperName: quotation?.shipper?.name ?? "",
       effectiveStartDate: quotation?.effectiveStartDate ?? new Date(),
@@ -343,6 +346,7 @@ async function map(quotation: Quotation): Promise<QuotationDTO> {
     serviceType: quotation.serviceType,
     marketingCode: quotation.marketingCode,
     marketingName: marketing?.name ?? "",
+    marketingEmail: marketing?.email ?? "",
     shipperCode: quotation.shipperCode,
     shipperName: shipper?.name ?? "",
     details,

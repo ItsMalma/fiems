@@ -86,6 +86,11 @@ export default function FormQuotation() {
                 `/marketing/priceCalculation?id=${record["id"]}&confirm=1`
               );
             },
+        onPrint: confirmed
+          ? (record) => {
+              router.replace(`/print/quotation?id=${record["id"]}`);
+            }
+          : undefined,
       },
       "status"
     ),

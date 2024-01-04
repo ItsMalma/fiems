@@ -61,3 +61,9 @@ ul[role="menu"].ant-menu-sub > li[role="menuitem"].ant-menu-item:active {
   overflow-x: hidden !important;
   overflow-y: auto !important;
 }
+
+@media print {
+  .hide-on-print {
+    display: none !important;
+  }
+}

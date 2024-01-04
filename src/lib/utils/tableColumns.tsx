@@ -1,4 +1,9 @@
-import { CheckCircleFilled, EditFilled, EyeFilled } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  EditFilled,
+  EyeFilled,
+  PrinterFilled,
+} from "@ant-design/icons";
 import { Button, Space, Switch } from "antd";
 import { ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -156,10 +161,12 @@ export function actionColumn<RecordType extends object>(
     onView,
     onEdit,
     onConfirm,
+    onPrint,
   }: {
     onView?: (record: RecordType) => void;
     onEdit?: (record: RecordType) => void;
     onConfirm?: (record: RecordType) => void;
+    onPrint?: (record: RecordType) => void;
   },
   selectKey?: KeyOf<RecordType>
 ): ColumnType<RecordType> {
@@ -189,6 +196,14 @@ export function actionColumn<RecordType extends object>(
             type="primary"
             icon={<CheckCircleFilled />}
             onClick={() => onConfirm(record)}
+            style={{ backgroundColor: "orange" }}
+          />
+        )}
+        {onPrint && (!selectKey || lodash.get(record, selectKey)) && (
+          <Button
+            type="primary"
+            icon={<PrinterFilled />}
+            onClick={() => onPrint(record)}
             style={{ backgroundColor: "orange" }}
           />
         )}

@@ -21,6 +21,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-keyed-flatten-children": "^3.0.0",
+    "react-to-print": "^2.14.15",
     "use-deep-compare": "^1.2.1",
     "zustand": "^4.4.7"
   },

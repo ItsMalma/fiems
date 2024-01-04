@@ -75,7 +75,6 @@ export function VesselInput(props: DetailInputProps) {
   );
 
   const [vesselOptions] = useAction(getInquiryVesselOptions, shipping);
-  console.log(shipping, vesselOptions);
 
   return (
     <Select
