@@ -305,15 +305,16 @@ enum ProductType {
 }
 
 model Product {
-  skuCode      String           @id @map("_id")
-  type         ProductType
-  category     ProductCategory? @relation(fields: [categoryReff], references: [reff])
-  categoryReff String?
-  name         String           @unique
-  satuan       String
-  createDate   DateTime         @default(now())
-  updateDate   DateTime         @updatedAt
-  status       Boolean          @default(true)
+  skuCode       String           @id @map("_id")
+  type          ProductType
+  category      ProductCategory? @relation(fields: [categoryReff], references: [reff])
+  categoryReff  String?
+  name          String           @unique
+  satuan        String
+  createDate    DateTime         @default(now())
+  updateDate    DateTime         @updatedAt
+  status        Boolean          @default(true)
+  RequestDetail RequestDetail[]
 
   @@map("products")
 }
@@ -463,4 +464,44 @@ model InquiryContainerDetail {
   status        Boolean          @default(true)
 
   @@map("inquiryContainerDetails")
+}
+
+// model JobOrder {
+//   number             String           @id @map("_id")
+//   inquiry            InquiryContainer @relation(fields: [inquiryNumber], references: [number])
+//   inquiryNumber      String
+//   roNumber           String
+//   consignee          Customer         @relation("consignee", fields: [consigneeCode], references: [code])
+//   consigneeCode      String
+//   stuffingDate       DateTime
+//   trackingRoute      Route            @relation(fields: [trackingRouteCode], references: [code])
+//   trackingRouteCode  String
+//   trackingVendor     Customer         @relation("trackingVendor", fields: [trackingVendorCode], references: [code])
+//   trackingVendorCode String
+//   vehicle            Vehicle          @relation(fields: [vehicleId], references: [id])
+//   vehicleId          String           @db.ObjectId
+//   driverName         String
+//   driverPhoneNumber  String
+// }
+
+model Request {
+  number     String          @id @map("_id")
+  type       ProductType
+  details    RequestDetail[]
+  createDate DateTime        @default(now())
+  updateDate DateTime        @updatedAt
+
+  @@map("requests")
+}
+
+model RequestDetail {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  product        Product  @relation(fields: [productSkuCode], references: [skuCode])
+  productSkuCode String
+  qty            Int
+  remarks        String
+  createDate     DateTime @default(now())
+  updateDate     DateTime @updatedAt
+  Request        Request? @relation(fields: [requestNumber], references: [number])
+  requestNumber  String?
 }
