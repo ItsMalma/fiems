@@ -496,12 +496,12 @@ model Request {
 
 model RequestDetail {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  request        Request  @relation(fields: [requestNumber], references: [number])
+  requestNumber  String
   product        Product  @relation(fields: [productSkuCode], references: [skuCode])
   productSkuCode String
   qty            Int
   remarks        String
   createDate     DateTime @default(now())
   updateDate     DateTime @updatedAt
-  Request        Request? @relation(fields: [requestNumber], references: [number])
-  requestNumber  String?
 }
