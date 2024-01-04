@@ -13,8 +13,10 @@ import {
   EnvironmentFilled,
   GroupOutlined,
   NodeIndexOutlined,
+  SettingOutlined,
   ShopOutlined,
   TeamOutlined,
+  ToolOutlined,
   UserOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
@@ -94,6 +96,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "marketing.vesselSchedule": {
     url: "/marketing/vesselSchedule",
     title: "Vessel Schedule",
+  },
+  "operational.request": {
+    url: "/operational/request",
+    title: "Request",
   },
 };
 
@@ -271,6 +277,18 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
                   key: "vesselSchedule",
                   label: "Vessel Schedule",
                   icon: <CalendarOutlined />,
+                },
+              ],
+            },
+            {
+              key: "operational",
+              label: "Operational",
+              icon: <SettingOutlined />,
+              children: [
+                {
+                  key: "request",
+                  label: "Request",
+                  icon: <ToolOutlined />,
                 },
               ],
             },

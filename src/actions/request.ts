@@ -7,6 +7,7 @@ import { getProduct } from "./product";
 
 export type RequestDetailDTO = {
   id: string;
+  requestNumber: string;
   productSkuCode: string;
   productName: string;
   qty: number;
@@ -45,6 +46,7 @@ async function mapDetail(
 
   return {
     id: requestDetail.id,
+    requestNumber: requestDetail.requestNumber,
     productSkuCode: requestDetail.productSkuCode,
     productName: product?.name ?? "",
     qty: requestDetail.qty,
