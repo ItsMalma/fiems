@@ -22,7 +22,6 @@ import {
   textColumn,
 } from "@/lib/utils/tableColumns";
 import { useMenu } from "@/stores/useMenu";
-import { Tabs } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -30,7 +29,7 @@ import React from "react";
 export default function InquiryContainer() {
   const { setKey } = useMenu();
   React.useEffect(() => {
-    setKey("marketing.inquiryContainer");
+    setKey("operational.operationalInquiryContainer");
   }, [setKey]);
 
   const [confirmed, setConfirmed] = React.useState(false);
@@ -66,80 +65,24 @@ export default function InquiryContainer() {
         refresh();
       },
       "Status",
-      confirmed
+      true
     ),
-    actionColumn(
-      {
-        onView: (record) => {
-          router.replace(
-            `/marketing/inquiryContainer/save?id=${record["id"]}&view=1`
-          );
-        },
-        onEdit: revised
-          ? (record) => {
-              router.replace(
-                `/marketing/inquiryContainer/save?id=${record["id"]}`
-              );
-            }
-          : undefined,
+    actionColumn({
+      onView: (record) => {
+        router.replace(`/operational/inquiryContainer/view?id=${record["id"]}`);
       },
-      "status"
-    ),
+    }),
   ];
 
   return (
-    <Tabs
-      type="card"
-      items={[
-        {
-          key: "unconfirmed",
-          label: "Unconfirmed",
-          children: (
-            <ReportLayout
-              name="Inquiry Container"
-              saveUrl="/marketing/inquiryContainer/save"
-              columns={columns}
-              data={inquiryDetails?.filter(
-                (inquiryDetail) =>
-                  !inquiryDetail.isRevised && !inquiryDetail.jobOrderNumber
-              )}
-              rowKey="id"
-            />
-          ),
-        },
-        {
-          key: "revised",
-          label: "Revised",
-          children: (
-            <ReportLayout
-              name="Inquiry Container"
-              columns={columns}
-              data={(inquiryDetails ?? []).filter(
-                (inquiryDetail) => inquiryDetail.isRevised
-              )}
-              rowKey="id"
-            />
-          ),
-        },
-        {
-          key: "confirmed",
-          label: "Confirmed",
-          children: (
-            <ReportLayout
-              name="Inquiry Container"
-              columns={columns}
-              data={(inquiryDetails ?? []).filter(
-                (inquiryDetail) => inquiryDetail.jobOrderNumber
-              )}
-              rowKey="id"
-            />
-          ),
-        },
-      ]}
-      onChange={(key) => {
-        setConfirmed(key === "confirmed");
-        setRevised(key === "revised");
-      }}
+    <ReportLayout
+      name="Inquiry Container"
+      columns={columns}
+      data={inquiryDetails?.filter(
+        (inquiryDetail) =>
+          !inquiryDetail.isRevised && !inquiryDetail.jobOrderNumber
+      )}
+      rowKey="id"
     />
   );
 }

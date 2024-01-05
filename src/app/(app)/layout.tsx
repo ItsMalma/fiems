@@ -11,6 +11,7 @@ import {
   DatabaseOutlined,
   DollarOutlined,
   EnvironmentFilled,
+  FileOutlined,
   GroupOutlined,
   NodeIndexOutlined,
   SettingOutlined,
@@ -96,6 +97,14 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "marketing.vesselSchedule": {
     url: "/marketing/vesselSchedule",
     title: "Vessel Schedule",
+  },
+  "operational.operationalInquiryContainer": {
+    url: "/operational/inquiryContainer",
+    title: "Inquiry Container",
+  },
+  "operational.jobOrder": {
+    url: "/operational/jobOrder",
+    title: "Job Order",
   },
   "operational.request": {
     url: "/operational/request",
@@ -285,6 +294,16 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
               label: "Operational",
               icon: <SettingOutlined />,
               children: [
+                {
+                  key: "operationalInquiryContainer",
+                  label: "Inquiry Container",
+                  icon: <CarryOutOutlined />,
+                },
+                {
+                  key: "jobOrder",
+                  label: "Job Order",
+                  icon: <FileOutlined />,
+                },
                 {
                   key: "request",
                   label: "Request",
