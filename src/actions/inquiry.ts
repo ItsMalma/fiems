@@ -35,6 +35,7 @@ export type InquiryDetailDTO = {
     purchaseName: string;
     purchaseAddress: string;
     purchaseCity: string;
+    createDate: Date;
   };
   jobOrderType: string;
   typeOrder: string;
@@ -148,6 +149,7 @@ async function mapDetail(
       purchaseName: inquiry?.purchase?.name ?? "",
       purchaseAddress: inquiry?.purchase?.address ?? "",
       purchaseCity: inquiry?.purchase?.city ?? "",
+      createDate: inquiry?.createDate ?? new Date(),
     },
     jobOrderType: inquiryDetail.jobOrderType,
     typeOrder: inquiryDetail.typeOrder,

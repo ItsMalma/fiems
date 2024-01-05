@@ -444,7 +444,6 @@ model InquiryContainer {
   details      InquiryContainerDetail[]
   createDate   DateTime                 @default(now())
   updateDate   DateTime                 @updatedAt
-  JobOrder     JobOrder[]
 
   @@map("inquiryContainers")
 }
@@ -468,31 +467,33 @@ model InquiryContainerDetail {
   updateDate    DateTime         @updatedAt
   status        Boolean          @default(true)
 
+  JobOrder JobOrder?
+
   @@map("inquiryContainerDetails")
 }
 
 model JobOrder {
-  number             String           @id @map("_id")
-  inquiry            InquiryContainer @relation(fields: [inquiryNumber], references: [number])
-  inquiryNumber      String
+  number             String                 @id @map("_id")
+  inquiryDetail      InquiryContainerDetail @relation(fields: [inquiryDetailId], references: [id])
+  inquiryDetailId    String                 @unique @db.ObjectId
   roNumber           String
-  consignee          Customer         @relation("consignee", fields: [consigneeCode], references: [code])
+  consignee          Customer               @relation("consignee", fields: [consigneeCode], references: [code])
   consigneeCode      String
   stuffingDate       DateTime
-  trackingRoute      Route            @relation(fields: [trackingRouteCode], references: [code])
+  trackingRoute      Route                  @relation(fields: [trackingRouteCode], references: [code])
   trackingRouteCode  String
-  trackingVendor     Customer         @relation("trackingVendor", fields: [trackingVendorCode], references: [code])
+  trackingVendor     Customer               @relation("trackingVendor", fields: [trackingVendorCode], references: [code])
   trackingVendorCode String
-  vehicle            Vehicle          @relation(fields: [vehicleId], references: [id])
-  vehicleId          String           @db.ObjectId
+  vehicle            Vehicle                @relation(fields: [vehicleId], references: [id])
+  vehicleId          String                 @db.ObjectId
   driverName         String
   driverPhoneNumber  String
   containerNumber1   String
   sealNumber1        String
-  containerNumber2   String
-  sealNumber2        String
-  createDate         DateTime         @default(now())
-  updateDate         DateTime         @updatedAt
+  containerNumber2   String?
+  sealNumber2        String?
+  createDate         DateTime               @default(now())
+  updateDate         DateTime               @updatedAt
 
   @@map("jobOrders")
 }
