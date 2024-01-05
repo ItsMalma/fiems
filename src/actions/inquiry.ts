@@ -13,6 +13,7 @@ import lodash from "lodash";
 import { FieldData } from "rc-field-form/es/interface";
 import { getCustomer } from "./customer";
 import { handleError } from "./error";
+import { getJobOrder } from "./jobOrder";
 import { getAllPriceShipper } from "./priceShipper";
 import { getSales } from "./sales";
 import { getAllVesselSchedule } from "./vesselSchedule";
@@ -60,8 +61,10 @@ export type InquiryDetailDTO = {
   voyage: string;
   etd: Date;
   eta: Date;
+  isRevised: boolean;
   createDate: Date;
   status: boolean;
+  jobOrderNumber?: string;
 };
 
 export type InquiryDTO = {
@@ -131,6 +134,8 @@ async function mapDetail(
     inquiryDetail.voyage
   );
 
+  const jobOrder = await getJobOrder(inquiryDetail.id);
+
   return {
     id: inquiryDetail.id,
     inquiryNumber: inquiryDetail.inquiryNumber,
@@ -174,12 +179,14 @@ async function mapDetail(
     voyage: inquiryDetail.voyage,
     etd: vesselSchedule?.etd ?? new Date(),
     eta: vesselSchedule?.eta ?? new Date(),
+    isRevised: inquiryDetail.isRevised,
     createDate: inquiryDetail.createDate,
     status:
       inquiryDetail.status &&
       (await getInquiryStatus(inquiryDetail.inquiryNumber)) &&
       (priceShipper?.status ?? true) &&
       (vesselSchedule?.status ?? true),
+    jobOrderNumber: jobOrder?.number,
   };
 }
 

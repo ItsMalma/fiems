@@ -111,7 +111,9 @@ export default function InquiryContainer() {
             <ReportLayout
               name="Inquiry Container"
               columns={columns}
-              data={inquiryDetails}
+              data={(inquiryDetails ?? []).filter(
+                (inquiryDetail) => inquiryDetail.isRevised
+              )}
               rowKey="id"
             />
           ),
@@ -123,7 +125,9 @@ export default function InquiryContainer() {
             <ReportLayout
               name="Inquiry Container"
               columns={columns}
-              data={inquiryDetails}
+              data={(inquiryDetails ?? []).filter(
+                (inquiryDetail) => inquiryDetail.jobOrderNumber
+              )}
               rowKey="id"
             />
           ),

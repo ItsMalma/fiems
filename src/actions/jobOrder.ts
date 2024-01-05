@@ -314,3 +314,22 @@ export async function getJobOrder(number: string) {
 
   return map(jobOrder);
 }
+
+export async function reviseJobOrder(number: string) {
+  await prisma.$transaction(async (tx) => {
+    const jobOrder = await tx.jobOrder.delete({
+      where: {
+        number,
+      },
+    });
+
+    await tx.inquiryContainerDetail.update({
+      where: {
+        id: jobOrder.inquiryDetailId,
+      },
+      data: {
+        isRevised: true,
+      },
+    });
+  });
+}

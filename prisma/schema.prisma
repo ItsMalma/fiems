@@ -463,6 +463,7 @@ model InquiryContainerDetail {
   vessel        Vessel           @relation(fields: [vesselId], references: [id])
   vesselId      String           @db.ObjectId
   voyage        String
+  isRevised     Boolean          @default(false)
   createDate    DateTime         @default(now())
   updateDate    DateTime         @updatedAt
   status        Boolean          @default(true)
