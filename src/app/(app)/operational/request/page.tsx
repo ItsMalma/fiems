@@ -26,18 +26,18 @@ export default function Request() {
     actionColumn({
       onView: (record) => {
         router.replace(
-          `/operational/request/save?id=${record["number"]}&view=1`
+          `/operational/request/save?number=${record["number"]}&view=1`
         );
       },
       onPrint: (record) => {
-        router.replace(`/print/request?id=${record["number"]}`);
+        router.replace(`/print/request?number=${record["number"]}`);
       },
     }),
   ];
 
   return (
     <ReportLayout
-      name="Price Vendor"
+      name="Request"
       saveUrl="/operational/request/save"
       columns={columns}
       data={requests}

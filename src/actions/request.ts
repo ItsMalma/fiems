@@ -26,7 +26,7 @@ export type RequestDetailInput = {
   id?: string;
   product: string;
   qty: number;
-  remarks: string;
+  remarks?: string;
 };
 
 export type RequestInput = {
@@ -98,7 +98,7 @@ export async function saveRequest(
               return {
                 productSkuCode: inputDetail.product,
                 qty: inputDetail.qty,
-                remarks: inputDetail.remarks,
+                remarks: inputDetail.remarks ?? "",
                 createDate: new Date(),
               };
             }),
@@ -142,7 +142,7 @@ export async function saveRequest(
                 requestNumber: number,
                 productSkuCode: inputDetail.product,
                 qty: inputDetail.qty,
-                remarks: inputDetail.remarks,
+                remarks: inputDetail.remarks ?? "",
                 createDate: new Date(),
               },
             });
