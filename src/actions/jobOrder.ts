@@ -5,7 +5,7 @@ import { JobOrder } from "@prisma/client";
 import lodash from "lodash";
 import { getCustomer } from "./customer";
 import { handleError } from "./error";
-import { getInquiryDetail } from "./inquiry";
+import { getInquiryDetail, getVesselScheduleByInquiry } from "./inquiry";
 import { getAllPriceVendorDetails } from "./priceVendor";
 import { getAllVehicles, getVehicle } from "./vehicle";
 
@@ -380,4 +380,29 @@ export async function canConvertToCombo(
     trackingRoute
   );
   return priceVendor?.containerSize === "40 HC";
+}
+
+export async function pindahKapalJobOrder(
+  number: string,
+  shipping: string,
+  vessel: string,
+  voyage: string
+) {
+  const jobOrder = await getJobOrder(number);
+
+  const vesselSchedule = await getVesselScheduleByInquiry(
+    shipping,
+    vessel,
+    voyage
+  );
+  if (vesselSchedule) {
+    await prisma.inquiryContainerDetail.update({
+      where: { id: jobOrder?.inquiryDetailId },
+      data: {
+        shippingCode: vesselSchedule.shippingCode,
+        vesselId: vesselSchedule.vesselId,
+        voyage: vesselSchedule.voyage,
+      },
+    });
+  }
 }

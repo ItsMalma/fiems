@@ -101,7 +101,6 @@ export function VoyageInput(props: DetailInputProps) {
 
   const [voyageOptions] = useAction(getInquiryVoyageOptions, shipping, vessel);
 
-  console.log(vessel);
   const [vesselSchedule] = useAction(
     getVesselScheduleByInquiry,
     shipping,

@@ -88,7 +88,9 @@ export default function FormQuotation() {
             },
         onPrint: confirmed
           ? (record) => {
-              router.replace(`/print/quotation?id=${record["id"]}`);
+              router.replace(
+                `/print/quotation?number=${record["quotationNumber"]}`
+              );
             }
           : undefined,
       },

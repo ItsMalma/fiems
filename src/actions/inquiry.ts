@@ -277,7 +277,6 @@ export async function saveInquiry(
   input: InquiryInput,
   number: string | null = null
 ) {
-  console.log(input);
   try {
     const fieldDatas: FieldData[] = [];
 

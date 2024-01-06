@@ -10,10 +10,11 @@ import { useAction } from "@/lib/hooks";
 import { containerSizes, containerTypes, typeOrders } from "@/lib/utils/consts";
 import { actionColumn, dateColumn, textColumn } from "@/lib/utils/tableColumns";
 import { useMenu } from "@/stores/useMenu";
-import { UndoOutlined } from "@ant-design/icons";
+import { CalendarOutlined, RollbackOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { PindahKapal } from "./modals";
 
 export default function JobOrder() {
   const { setKey } = useMenu();
@@ -61,24 +62,49 @@ export default function JobOrder() {
     }),
   ];
 
+  const [pindahKapal, setPindahKapal] = React.useState<{
+    jobOrders: JobOrderDTO[];
+    open: boolean;
+  }>({ jobOrders: [], open: false });
+
   return (
-    <ReportLayout
-      name="Job Order"
-      columns={columns}
-      data={jobOrders}
-      rowKey="number"
-      selectActions={[
-        {
-          name: "Revise",
-          onClick: async (records) => {
-            for (const record of records) {
-              await reviseJobOrder(record.number);
-            }
-            refresh();
+    <>
+      <ReportLayout
+        name="Job Order"
+        columns={columns}
+        data={jobOrders}
+        rowKey="number"
+        selectActions={[
+          {
+            name: "Revise",
+            onClick: async (records) => {
+              for (const record of records) {
+                await reviseJobOrder(record.number);
+              }
+              refresh();
+            },
+            icon: <RollbackOutlined />,
           },
-          icon: <UndoOutlined />,
-        },
-      ]}
-    />
+          {
+            name: "Pindah Kapal",
+            onClick: async (records) => {
+              setPindahKapal({
+                jobOrders: records,
+                open: true,
+              });
+            },
+            icon: <CalendarOutlined />,
+          },
+        ]}
+      />
+      <PindahKapal
+        open={pindahKapal.open}
+        onClose={() => {
+          setPindahKapal((prev) => ({ ...prev, open: false }));
+          refresh();
+        }}
+        jobOrders={pindahKapal.jobOrders}
+      />
+    </>
   );
 }

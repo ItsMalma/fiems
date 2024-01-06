@@ -155,10 +155,6 @@ export default function PrintQuotation() {
                 onBlur={(e) => {
                   if (!e.currentTarget.value) {
                     setList(list.filter((_, j) => j !== i));
-                    console.log(
-                      list,
-                      list.filter((_, j) => j !== i)
-                    );
                   }
                 }}
               />

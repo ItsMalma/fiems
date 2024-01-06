@@ -1,7 +1,7 @@
 "use client";
 
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Flex, Input, Select, Space, Table } from "antd";
+import { Button, Flex, Input, Select, Space, Table, Tooltip } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -83,15 +83,16 @@ export default function ReportLayout<DTO extends object>(
         />
         <Space>
           {props.selectActions?.map((selectAction) => (
-            <Button
-              key={selectAction.name}
-              type="primary"
-              icon={selectAction.icon}
-              onClick={async () => {
-                await selectAction.onClick(selected);
-              }}
-              disabled={selected.length === 0}
-            />
+            <Tooltip key={selectAction.name} title={selectAction.name}>
+              <Button
+                type="primary"
+                icon={selectAction.icon}
+                onClick={async () => {
+                  await selectAction.onClick(selected);
+                }}
+                disabled={selected.length === 0}
+              />
+            </Tooltip>
           ))}
         </Space>
       </Flex>
