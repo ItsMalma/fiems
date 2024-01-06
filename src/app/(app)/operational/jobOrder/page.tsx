@@ -11,6 +11,7 @@ import { containerSizes, containerTypes, typeOrders } from "@/lib/utils/consts";
 import { actionColumn, dateColumn, textColumn } from "@/lib/utils/tableColumns";
 import { useMenu } from "@/stores/useMenu";
 import { CalendarOutlined, RollbackOutlined } from "@ant-design/icons";
+import { Tabs } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -23,6 +24,8 @@ export default function JobOrder() {
   }, [setKey]);
 
   const [jobOrders, refresh] = useAction(getAllJobOrder);
+
+  const [confirmed, setConfirmed] = React.useState(false);
 
   const [openConfirm, setOpenConfirm] = React.useState<{
     jobOrder?: JobOrderDTO;
@@ -64,12 +67,14 @@ export default function JobOrder() {
           `/operational/jobOrder/save?number=${record["number"]}&view=1`
         );
       },
-      onConfirm: (record) => {
-        setOpenConfirm({
-          jobOrder: record,
-          open: true,
-        });
-      },
+      onConfirm: confirmed
+        ? undefined
+        : (record) => {
+            setOpenConfirm({
+              jobOrder: record,
+              open: true,
+            });
+          },
     }),
   ];
 
@@ -79,51 +84,81 @@ export default function JobOrder() {
   }>({ jobOrders: [], open: false });
 
   return (
-    <>
-      <ReportLayout
-        name="Job Order"
-        columns={columns}
-        data={jobOrders}
-        rowKey="number"
-        selectActions={[
-          {
-            name: "Revise",
-            onClick: async (records) => {
-              for (const record of records) {
-                await reviseJobOrder(record.number);
-              }
-              refresh();
-            },
-            icon: <RollbackOutlined />,
-          },
-          {
-            name: "Pindah Kapal",
-            onClick: async (records) => {
-              setPindahKapal({
-                jobOrders: records,
-                open: true,
-              });
-            },
-            icon: <CalendarOutlined />,
-          },
-        ]}
-      />
-      <PindahKapal
-        open={pindahKapal.open}
-        onClose={() => {
-          setPindahKapal((prev) => ({ ...prev, open: false }));
-          refresh();
-        }}
-        jobOrders={pindahKapal.jobOrders}
-      />
-      <Confirm
-        open={openConfirm.open && !!openConfirm.jobOrder}
-        onClose={() => {
-          setOpenConfirm((prev) => ({ ...prev, open: false }));
-          refresh();
-        }}
-        jobOrder={openConfirm.jobOrder!}
-      />
-    </>
+    <Tabs
+      type="card"
+      items={[
+        {
+          key: "unconfirmed",
+          label: "Unconfirmed",
+          children: (
+            <>
+              <ReportLayout
+                name="Job Order"
+                columns={columns}
+                data={(jobOrders ?? []).filter(
+                  (jobOrder) => !jobOrder.td || !jobOrder.ta || !jobOrder.sandar
+                )}
+                rowKey="number"
+                selectActions={[
+                  {
+                    name: "Revise",
+                    onClick: async (records) => {
+                      for (const record of records) {
+                        await reviseJobOrder(record.number);
+                      }
+                      refresh();
+                    },
+                    icon: <RollbackOutlined />,
+                  },
+                  {
+                    name: "Pindah Kapal",
+                    onClick: async (records) => {
+                      setPindahKapal({
+                        jobOrders: records,
+                        open: true,
+                      });
+                    },
+                    icon: <CalendarOutlined />,
+                  },
+                ]}
+              />
+              <PindahKapal
+                open={pindahKapal.open}
+                onClose={() => {
+                  setPindahKapal((prev) => ({ ...prev, open: false }));
+                  refresh();
+                }}
+                jobOrders={pindahKapal.jobOrders}
+              />
+              <Confirm
+                open={openConfirm.open && !!openConfirm.jobOrder}
+                onClose={() => {
+                  setOpenConfirm((prev) => ({ ...prev, open: false }));
+                  refresh();
+                }}
+                jobOrder={openConfirm.jobOrder!}
+              />
+            </>
+          ),
+        },
+        {
+          key: "confirmed",
+          label: "Confirmed",
+          children: (
+            <ReportLayout
+              name="Job Order"
+              columns={columns}
+              data={(jobOrders ?? []).filter(
+                (jobOrder) => jobOrder.td && jobOrder.ta && jobOrder.sandar
+              )}
+              rowKey="number"
+            />
+          ),
+        },
+      ]}
+      onChange={(key) => {
+        setConfirmed(key === "confirmed");
+      }}
+    />
   );
 }
