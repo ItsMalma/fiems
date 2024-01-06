@@ -78,6 +78,54 @@ export default function JobOrder() {
     }),
   ];
 
+  const confirmedColumns: ColumnsType<JobOrderDTO> = [
+    dateColumn("createDate"),
+    textColumn("number"),
+    textColumn("inquiryDetail.inquiryNumber", "Inquiry Number"),
+    textColumn("inquiryDetail.inquiry.salesName", "Sales Name"),
+    textColumn("inquiryDetail.shippingName", "Shipping Name"),
+    textColumn("inquiryDetail.vesselName", "Vessel Name"),
+    textColumn("inquiryDetail.voyage", "Voyage"),
+    dateColumn("inquiryDetail.etd", "ETD"),
+    dateColumn("inquiryDetail.eta", "ETA"),
+    dateColumn("inquiryDetail.loadDate", "Load Date"),
+    textColumn("inquiryDetail.inquiry.shipperName", "Shipper Name"),
+    textColumn("inquiryDetail.deliveryToName", "Delivery To"),
+    textColumn("inquiryDetail.routeDescription", "Route Description"),
+    textColumn("inquiryDetail.containerSize", "Container Size", containerSizes),
+    textColumn("inquiryDetail.containerType", "Container Type", containerTypes),
+    textColumn("inquiryDetail.typeOrder", "Type Order", typeOrders),
+    textColumn("roNumber", "RO Number"),
+    textColumn("consigneeName"),
+    dateColumn("stuffingDate"),
+    textColumn("trackingRouteDescription"),
+    textColumn("trackingVendorName"),
+    textColumn("truckNumber"),
+    textColumn("driverName"),
+    textColumn("containerNumber1", "Container Number 1"),
+    textColumn("sealNumber1", "Seal Number 1"),
+    textColumn("containerNumber2", "Container Number 2"),
+    textColumn("sealNumber2", "Seal Number 2"),
+    dateColumn("td", "TD"),
+    dateColumn("ta", "TA"),
+    dateColumn("sandar", "Sandar"),
+    actionColumn({
+      onView: (record) => {
+        router.replace(
+          `/operational/jobOrder/save?number=${record["number"]}&view=1`
+        );
+      },
+      onConfirm: confirmed
+        ? undefined
+        : (record) => {
+            setOpenConfirm({
+              jobOrder: record,
+              open: true,
+            });
+          },
+    }),
+  ];
+
   const [pindahKapal, setPindahKapal] = React.useState<{
     jobOrders: JobOrderDTO[];
     open: boolean;
@@ -147,7 +195,7 @@ export default function JobOrder() {
           children: (
             <ReportLayout
               name="Job Order"
-              columns={columns}
+              columns={confirmedColumns}
               data={(jobOrders ?? []).filter(
                 (jobOrder) => jobOrder.td && jobOrder.ta && jobOrder.sandar
               )}
