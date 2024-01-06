@@ -4,11 +4,15 @@ import {
   getInquiryVoyageOptions,
   getVesselScheduleByInquiry,
 } from "@/actions/inquiry";
-import { JobOrderDTO, pindahKapalJobOrder } from "@/actions/jobOrder";
+import {
+  JobOrderDTO,
+  confirmJobOrder,
+  pindahKapalJobOrder,
+} from "@/actions/jobOrder";
 import { useAction } from "@/lib/hooks";
 import { requiredRule } from "@/lib/utils/forms";
 import { Form, Modal } from "antd";
-import { DateRange, Select } from "antx";
+import { DatePicker, DateRange, Select } from "antx";
 import dayjs from "dayjs";
 import React from "react";
 
@@ -101,6 +105,88 @@ export function PindahKapal(props: PindahKapalProps) {
           name="estimatedTime"
           label="Estimated Time"
           rules={[requiredRule]}
+        />
+      </Form>
+    </Modal>
+  );
+}
+
+type ConfirmProps = {
+  open: boolean;
+  onClose: () => void;
+  jobOrder: JobOrderDTO;
+};
+
+export function Confirm(props: ConfirmProps) {
+  const [form] = Form.useForm();
+
+  const td = Form.useWatch("td", form);
+  const ta = Form.useWatch("ta", form);
+
+  return (
+    <Modal
+      title="Confirm"
+      centered
+      destroyOnClose={true}
+      open={props.open}
+      onCancel={() => props.onClose()}
+      onOk={() => form.submit()}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        colon={false}
+        requiredMark={(label, { required }) => {
+          return (
+            <>
+              {label}
+              {required && <span style={{ color: "red" }}>*</span>}
+            </>
+          );
+        }}
+        autoComplete="off"
+        onFinish={async (val) => {
+          await confirmJobOrder(
+            props.jobOrder.number,
+            val.td,
+            val.ta,
+            val.sandar
+          );
+          props.onClose();
+        }}
+      >
+        <DatePicker
+          disabled={!!props.jobOrder?.td}
+          initialValue={props.jobOrder?.td ? dayjs(props.jobOrder?.td) : null}
+          name="td"
+          label="TD"
+        />
+        <DatePicker
+          disabled={!!props.jobOrder?.ta}
+          disabledDate={(current) => {
+            if (td) {
+              return current.isBefore(td);
+            }
+          }}
+          initialValue={props.jobOrder?.ta ? dayjs(props.jobOrder?.ta) : null}
+          name="ta"
+          label="TA"
+        />
+        <DatePicker
+          disabled={!!props.jobOrder?.sandar}
+          disabledDate={(current) => {
+            if (ta) {
+              return current.isBefore(ta);
+            }
+          }}
+          initialValue={
+            props.jobOrder?.sandar ? dayjs(props.jobOrder?.sandar) : null
+          }
+          name="sandar"
+          label="Sandar"
+          popupStyle={{
+            zoom: 1,
+          }}
         />
       </Form>
     </Modal>

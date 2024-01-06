@@ -14,7 +14,7 @@ import { CalendarOutlined, RollbackOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { PindahKapal } from "./modals";
+import { Confirm, PindahKapal } from "./modals";
 
 export default function JobOrder() {
   const { setKey } = useMenu();
@@ -23,6 +23,11 @@ export default function JobOrder() {
   }, [setKey]);
 
   const [jobOrders, refresh] = useAction(getAllJobOrder);
+
+  const [openConfirm, setOpenConfirm] = React.useState<{
+    jobOrder?: JobOrderDTO;
+    open: boolean;
+  }>({ open: false });
 
   const router = useRouter();
   const columns: ColumnsType<JobOrderDTO> = [
@@ -58,6 +63,12 @@ export default function JobOrder() {
         router.replace(
           `/operational/jobOrder/save?number=${record["number"]}&view=1`
         );
+      },
+      onConfirm: (record) => {
+        setOpenConfirm({
+          jobOrder: record,
+          open: true,
+        });
       },
     }),
   ];
@@ -104,6 +115,14 @@ export default function JobOrder() {
           refresh();
         }}
         jobOrders={pindahKapal.jobOrders}
+      />
+      <Confirm
+        open={openConfirm.open && !!openConfirm.jobOrder}
+        onClose={() => {
+          setOpenConfirm((prev) => ({ ...prev, open: false }));
+          refresh();
+        }}
+        jobOrder={openConfirm.jobOrder!}
       />
     </>
   );

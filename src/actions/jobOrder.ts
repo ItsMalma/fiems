@@ -77,6 +77,9 @@ export type JobOrderDTO = {
   sealNumber1: string;
   containerNumber2: string | null;
   sealNumber2: string | null;
+  td: Date | null;
+  ta: Date | null;
+  sandar: Date | null;
   createDate: Date;
 };
 
@@ -155,6 +158,9 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     sealNumber1: jobOrder.sealNumber1,
     containerNumber2: jobOrder.containerNumber2,
     sealNumber2: jobOrder.sealNumber2,
+    td: jobOrder.td,
+    ta: jobOrder.ta,
+    sandar: jobOrder.sandar,
     createDate: jobOrder.createDate,
   };
 }
@@ -405,4 +411,20 @@ export async function pindahKapalJobOrder(
       },
     });
   }
+}
+
+export async function confirmJobOrder(
+  number: string,
+  td?: Date,
+  ta?: Date,
+  sandar?: Date
+) {
+  await prisma.jobOrder.update({
+    where: { number },
+    data: {
+      td,
+      ta,
+      sandar,
+    },
+  });
 }

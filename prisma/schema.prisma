@@ -493,6 +493,9 @@ model JobOrder {
   sealNumber1        String
   containerNumber2   String?
   sealNumber2        String?
+  td                 DateTime?
+  ta                 DateTime?
+  sandar             DateTime?
   createDate         DateTime               @default(now())
   updateDate         DateTime               @updatedAt
 
