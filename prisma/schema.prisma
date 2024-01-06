@@ -499,7 +499,19 @@ model JobOrder {
   createDate         DateTime               @default(now())
   updateDate         DateTime               @updatedAt
 
+  SuratPerintahMuat SuratPerintahMuat?
+
   @@map("jobOrders")
+}
+
+model SuratPerintahMuat {
+  number         String   @id @map("_id")
+  jobOrder       JobOrder @relation(fields: [jobOrderNumber], references: [number])
+  jobOrderNumber String   @unique
+  createDate     DateTime @default(now())
+  updateDate     DateTime @updatedAt
+
+  @@map("suratPerintahMuat")
 }
 
 model Request {
