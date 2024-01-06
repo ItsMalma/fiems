@@ -13,7 +13,6 @@ import lodash from "lodash";
 import { FieldData } from "rc-field-form/es/interface";
 import { getCustomer } from "./customer";
 import { handleError } from "./error";
-import { getJobOrder } from "./jobOrder";
 import { getAllPriceShipper } from "./priceShipper";
 import { getSales } from "./sales";
 import { getAllVesselSchedule } from "./vesselSchedule";
@@ -43,6 +42,7 @@ export type InquiryDetailDTO = {
   loadDate: Date;
   deliveryToCode: string;
   deliveryToName: string;
+  deliveryToAddress: string;
   deliveryToCity: string;
   routeCode: string;
   routeDescription: string;
@@ -134,7 +134,11 @@ async function mapDetail(
     inquiryDetail.voyage
   );
 
-  const jobOrder = await getJobOrder(inquiryDetail.id);
+  const jobOrder = await prisma.jobOrder.findFirst({
+    where: {
+      inquiryDetailId: inquiryDetail.id,
+    },
+  });
 
   return {
     id: inquiryDetail.id,
@@ -161,6 +165,7 @@ async function mapDetail(
     loadDate: inquiryDetail.loadDate,
     deliveryToCode: priceShipper?.deliveryToCode ?? "",
     deliveryToName: priceShipper?.deliveryToName ?? "",
+    deliveryToAddress: priceShipper?.deliveryToAddress ?? "",
     deliveryToCity: priceShipper?.deliveryToCity ?? "",
     routeCode: inquiryDetail.routeCode,
     routeDescription: priceShipper?.routeDescription ?? "",
@@ -272,6 +277,7 @@ export async function saveInquiry(
   input: InquiryInput,
   number: string | null = null
 ) {
+  console.log(input);
   try {
     const fieldDatas: FieldData[] = [];
 
@@ -287,13 +293,16 @@ export async function saveInquiry(
       if (inquiryDetail) {
         const mappedInquiryDetail = await mapDetail(inquiryDetail);
         if (
-          !!inputDetail.id !== (inquiryDetail.id !== inputDetail.id) &&
+          !!inputDetail.id === (inquiryDetail.id !== inputDetail.id) &&
           mappedInquiryDetail.status
         ) {
           fieldDatas.push(
             { name: "shipper", errors: ["Sudah ada yang sama"] },
             { name: ["details", i, "route"], errors: ["Sudah ada yang sama"] },
-            { name: ["details", i, "voyage"], errors: ["Sudah ada yang sama"] }
+            {
+              name: ["details", i, "containerSize"],
+              errors: ["Sudah ada yang sama"],
+            }
           );
           return fieldDatas;
         }
@@ -359,6 +368,7 @@ export async function saveInquiry(
                 shippingCode: inputDetail.shipping,
                 vesselId: inputDetail.vessel,
                 voyage: inputDetail.voyage,
+                isRevised: false,
               },
             });
           } else {

@@ -2,11 +2,12 @@
 
 import prisma from "@/lib/prisma";
 import { JobOrder } from "@prisma/client";
+import lodash from "lodash";
 import { getCustomer } from "./customer";
 import { handleError } from "./error";
 import { getInquiryDetail } from "./inquiry";
 import { getAllPriceVendorDetails } from "./priceVendor";
-import { getVehicle } from "./vehicle";
+import { getAllVehicles, getVehicle } from "./vehicle";
 
 export type JobOrderDTO = {
   number: string;
@@ -18,6 +19,7 @@ export type JobOrderDTO = {
       salesName: string;
       shipperCode: string;
       shipperName: string;
+      shipperAddress: string;
       createDate: Date;
     };
     shippingCode: string;
@@ -30,7 +32,7 @@ export type JobOrderDTO = {
     loadDate: Date;
     deliveryToCode: string;
     deliveryToName: string;
-    deliveryToCity: string;
+    deliveryToAddress: string;
     routeCode: string;
     routeDescription: string;
     containerSize: string;
@@ -67,7 +69,6 @@ export type JobOrderDTO = {
   trackingRouteDescription: string;
   trackingVendorCode: string;
   trackingVendorName: string;
-  vehicleId: string;
   truckNumber: string;
   truckType: string;
   driverName: string;
@@ -91,8 +92,8 @@ export type JobOrderInput = {
   driverPhoneNumber: string;
   containerNumber1: string;
   sealNumber1: string;
-  containerNumber2?: string;
-  sealNumber2?: string;
+  containerNumber2: string | null;
+  sealNumber2: string | null;
 };
 
 async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
@@ -102,7 +103,7 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     jobOrder.trackingVendorCode,
     jobOrder.trackingRouteCode
   );
-  const vehicle = await getVehicle(jobOrder.vehicleId);
+  const vehicle = await getVehicle(jobOrder.truckNumber);
 
   return {
     number: jobOrder.number,
@@ -114,6 +115,7 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
         salesName: inquiryDetail?.inquiry.salesName ?? "",
         shipperCode: inquiryDetail?.inquiry.shipperCode ?? "",
         shipperName: inquiryDetail?.inquiry.shipperName ?? "",
+        shipperAddress: inquiryDetail?.inquiry.shipperAddress ?? "",
         createDate: inquiryDetail?.inquiry.createDate ?? new Date(),
       },
       shippingCode: inquiryDetail?.shippingCode ?? "",
@@ -126,7 +128,7 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
       loadDate: inquiryDetail?.loadDate ?? new Date(),
       deliveryToCode: inquiryDetail?.deliveryToCode ?? "",
       deliveryToName: inquiryDetail?.deliveryToName ?? "",
-      deliveryToCity: inquiryDetail?.deliveryToCity ?? "",
+      deliveryToAddress: inquiryDetail?.deliveryToAddress ?? "",
       routeCode: inquiryDetail?.routeCode ?? "",
       routeDescription: inquiryDetail?.routeDescription ?? "",
       containerSize: inquiryDetail?.containerSize ?? "",
@@ -145,7 +147,6 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     trackingRouteDescription: priceVendorDetail?.routeDescription ?? "",
     trackingVendorCode: jobOrder.trackingVendorCode,
     trackingVendorName: priceVendorDetail?.priceVendor.vendorName ?? "",
-    vehicleId: jobOrder.vehicleId ?? "",
     truckNumber: vehicle?.truckNumber ?? "",
     truckType: vehicle?.truckType ?? "",
     driverName: jobOrder.driverName,
@@ -260,7 +261,7 @@ export async function saveJobOrder(
             stuffingDate: input.stuffingDate,
             trackingRouteCode: input.trackingRoute,
             trackingVendorCode: input.trackingVendor,
-            vehicleId: input.truck,
+            truckNumber: input.truck,
             driverName: input.driverName,
             driverPhoneNumber: input.driverPhoneNumber,
             containerNumber1: input.containerNumber1,
@@ -280,7 +281,7 @@ export async function saveJobOrder(
             stuffingDate: input.stuffingDate,
             trackingRouteCode: input.trackingRoute,
             trackingVendorCode: input.trackingVendor,
-            vehicleId: input.truck,
+            truckNumber: input.truck,
             driverName: input.driverName,
             driverPhoneNumber: input.driverPhoneNumber,
             containerNumber1: input.containerNumber1,
@@ -332,4 +333,51 @@ export async function reviseJobOrder(number: string) {
       },
     });
   });
+}
+
+export async function getJobOrderTrackingRouteOptions() {
+  return lodash.uniqBy(
+    (await getAllPriceVendorDetails()).map((priceVendorDetail) => ({
+      label: priceVendorDetail.routeDescription,
+      value: priceVendorDetail.routeCode,
+    })),
+    "value"
+  );
+}
+
+export async function getJobOrderTrackingVendorOptions(trackingRoute: string) {
+  return lodash.uniqBy(
+    (await getAllPriceVendorDetails())
+      .filter(
+        (priceVendorDetail) => priceVendorDetail.routeCode === trackingRoute
+      )
+      .map((priceVendorDetail) => ({
+        label: priceVendorDetail.priceVendor.vendorName,
+        value: priceVendorDetail.priceVendor.vendorCode,
+      })),
+    "value"
+  );
+}
+
+export async function getJobOrderTruckOptions(trackingVendor: string) {
+  return lodash.uniqBy(
+    (await getAllVehicles())
+      .filter((vehicle) => vehicle.vendorCode === trackingVendor)
+      .map((vehicle) => ({
+        label: vehicle.truckNumber,
+        value: vehicle.truckNumber,
+      })),
+    "value"
+  );
+}
+
+export async function canConvertToCombo(
+  trackingRoute: string,
+  trackingVendor: string
+) {
+  const priceVendor = await getPriceVendorDetailByJobOrder(
+    trackingVendor,
+    trackingRoute
+  );
+  return priceVendor?.containerSize === "40 HC";
 }

@@ -1,11 +1,16 @@
 "use client";
 
-import { JobOrderDTO, getAllJobOrder } from "@/actions/jobOrder";
+import {
+  JobOrderDTO,
+  getAllJobOrder,
+  reviseJobOrder,
+} from "@/actions/jobOrder";
 import ReportLayout from "@/components/layouts/ReportLayout";
 import { useAction } from "@/lib/hooks";
 import { containerSizes, containerTypes, typeOrders } from "@/lib/utils/consts";
 import { actionColumn, dateColumn, textColumn } from "@/lib/utils/tableColumns";
 import { useMenu } from "@/stores/useMenu";
+import { UndoOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -59,10 +64,21 @@ export default function JobOrder() {
   return (
     <ReportLayout
       name="Job Order"
-      saveUrl="/operational/jobOrder/save"
       columns={columns}
       data={jobOrders}
       rowKey="number"
+      selectActions={[
+        {
+          name: "Revise",
+          onClick: async (records) => {
+            for (const record of records) {
+              await reviseJobOrder(record.number);
+            }
+            refresh();
+          },
+          icon: <UndoOutlined />,
+        },
+      ]}
     />
   );
 }

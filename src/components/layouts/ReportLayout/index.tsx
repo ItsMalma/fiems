@@ -1,10 +1,16 @@
 "use client";
 
 import { FileAddOutlined } from "@ant-design/icons";
-import { Button, Flex, Input, Select, Table } from "antd";
+import { Button, Flex, Input, Select, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
+
+type SelectAction<DTO> = {
+  name: string;
+  icon: React.ReactNode;
+  onClick: (records: DTO[]) => void | Promise<void>;
+};
 
 type ReportLayoutProps<DTO> = {
   name: string;
@@ -17,6 +23,8 @@ type ReportLayoutProps<DTO> = {
   rowKey: keyof DTO;
 
   isLoading?: boolean;
+
+  selectActions?: SelectAction<DTO>[];
 };
 
 export default function ReportLayout<DTO extends object>(
@@ -26,6 +34,8 @@ export default function ReportLayout<DTO extends object>(
 
   const [search, setSearch] = React.useState("");
   const [hideColumns, setHideColumns] = React.useState<string[]>([]);
+
+  const [selected, setSelected] = React.useState<DTO[]>([]);
 
   return (
     <>
@@ -71,6 +81,19 @@ export default function ReportLayout<DTO extends object>(
           value={hideColumns}
           onChange={(val) => setHideColumns(val)}
         />
+        <Space>
+          {props.selectActions?.map((selectAction) => (
+            <Button
+              key={selectAction.name}
+              type="primary"
+              icon={selectAction.icon}
+              onClick={async () => {
+                await selectAction.onClick(selected);
+              }}
+              disabled={selected.length === 0}
+            />
+          ))}
+        </Space>
       </Flex>
       <Table<DTO>
         bordered
@@ -83,7 +106,11 @@ export default function ReportLayout<DTO extends object>(
             val?.toString().toLowerCase().includes(search.toLowerCase())
           )
         )}
-        rowSelection={{}}
+        rowSelection={{
+          onSelect: (_, _selected, selectedRows) => {
+            setSelected(selectedRows);
+          },
+        }}
         pagination={{ showSizeChanger: true }}
         loading={props.isLoading || !props.data}
         scroll={{ x: true }}

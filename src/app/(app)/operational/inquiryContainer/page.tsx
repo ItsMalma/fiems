@@ -32,9 +32,6 @@ export default function InquiryContainer() {
     setKey("operational.operationalInquiryContainer");
   }, [setKey]);
 
-  const [confirmed, setConfirmed] = React.useState(false);
-  const [revised, setRevised] = React.useState(false);
-
   const [inquiryDetails, refresh] = useAction(getAllInquiryDetails);
 
   const router = useRouter();
@@ -70,6 +67,9 @@ export default function InquiryContainer() {
     actionColumn({
       onView: (record) => {
         router.replace(`/operational/inquiryContainer/view?id=${record["id"]}`);
+      },
+      onConfirm: (record) => {
+        router.replace(`/operational/jobOrder/save?inquiry=${record["id"]}`);
       },
     }),
   ];

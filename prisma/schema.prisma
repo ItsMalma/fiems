@@ -485,8 +485,8 @@ model JobOrder {
   trackingRouteCode  String
   trackingVendor     Customer               @relation("trackingVendor", fields: [trackingVendorCode], references: [code])
   trackingVendorCode String
-  vehicle            Vehicle                @relation(fields: [vehicleId], references: [id])
-  vehicleId          String                 @db.ObjectId
+  truck              Vehicle                @relation(fields: [truckNumber], references: [truckNumber])
+  truckNumber        String
   driverName         String
   driverPhoneNumber  String
   containerNumber1   String
@@ -519,4 +519,6 @@ model RequestDetail {
   remarks        String
   createDate     DateTime @default(now())
   updateDate     DateTime @updatedAt
+
+  @@map("requestDetails")
 }

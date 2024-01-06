@@ -7,6 +7,7 @@ import { getCustomer } from "./customer";
 import { handleError } from "./error";
 
 export type VehicleDTO = {
+  id: string;
   vendorCode: string;
   vendorName: string;
   truckNumber: string;
@@ -41,6 +42,7 @@ async function map(vehicle: Vehicle): Promise<VehicleDTO> {
   const vendor = await getCustomer(vehicle.vendorCode);
 
   return {
+    id: vehicle.id,
     vendorCode: vendor?.code ?? "",
     vendorName: vendor?.name ?? "",
     truckNumber: vehicle.truckNumber,

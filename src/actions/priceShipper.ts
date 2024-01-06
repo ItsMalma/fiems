@@ -31,6 +31,7 @@ export type PriceShipperDTO = {
   routeDescription: string;
   deliveryToCode: string;
   deliveryToName: string;
+  deliveryToAddress: string;
   deliveryToCity: string;
   containerSize: string;
   containerType: string;
@@ -79,6 +80,7 @@ async function map(priceShipper: PriceShipper): Promise<PriceShipperDTO> {
     routeDescription: route?.description ?? "",
     deliveryToCode: quotationDetail?.deliveryToCode ?? "",
     deliveryToName: quotationDetail?.deliveryToName ?? "",
+    deliveryToAddress: quotationDetail?.deliveryToAddress ?? "",
     deliveryToCity: quotationDetail?.deliveryToCity ?? "",
     containerSize: priceShipper.containerSize,
     containerType: quotationDetail?.containerType ?? "",

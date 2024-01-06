@@ -100,7 +100,7 @@ function dtoToForm(dto: InquiryDTO): InquiryContainerForm {
       sumOffInsurance: detail.insurance,
       statusPPN: detail.statusPPN,
       shipping: detail.shippingCode,
-      vessel: detail.vesselName,
+      vessel: detail.vesselId,
       voyage: detail.voyage,
       estimatedTime: [dayjs(detail.etd), dayjs(detail.eta)],
     })),
@@ -248,7 +248,7 @@ export default function InquiryContainer() {
               eta: detail.estimatedTime[1].toDate(),
             })),
           },
-          numberParam
+          numberParam ?? inquiry?.number ?? inquiryDetail?.inquiryNumber
         );
         if (err) {
           form.setFields(err);
