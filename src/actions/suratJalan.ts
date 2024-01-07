@@ -125,7 +125,7 @@ export async function getSuratJalanNumber() {
     },
   });
 
-  const [currentMonth, currentYear] = dayjs().format("MM/YYYY").split("/");
+  const [currentMonth, currentYear] = dayjs().format("MMMM/YYYY").split("/");
 
   if (!suratJalan) {
     return `0001/SJ/${currentMonth}/${currentYear}`;
@@ -216,6 +216,7 @@ export async function saveSuratJalan(
           },
           data: {
             doCustomer: input.doCustomer,
+            productCategoryReff: input.productCategory,
           },
         });
       });

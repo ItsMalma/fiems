@@ -20,7 +20,7 @@ type FormListContainerProps = {
   errors: React.ReactNode[];
 
   disableAdd?: boolean;
-  disableDeleteOn: (name: number) => boolean;
+  disableDeleteOn?: (name: number) => boolean;
 };
 
 export function FormListContainer(props: FormListContainerProps) {
@@ -69,7 +69,9 @@ export function FormListContainer(props: FormListContainerProps) {
                 danger
                 onClick={() => props.remove(field.name)}
                 icon={<DeleteFilled />}
-                disabled={props.disableDeleteOn(field.name)}
+                disabled={
+                  props.disableDeleteOn && props.disableDeleteOn(field.name)
+                }
               />
             </Form.Item>
             {flattenChildren(props.children(field)).map((child, key) => {
