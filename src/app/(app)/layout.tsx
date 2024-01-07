@@ -118,6 +118,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/operational/bast",
     title: "BAST",
   },
+  "operational.packingList": {
+    url: "/operational/packingList",
+    title: "Packing List",
+  },
   "operational.request": {
     url: "/operational/request",
     title: "Request",
@@ -329,6 +333,11 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
                 {
                   key: "bast",
                   label: "BAST",
+                  icon: <FileOutlined />,
+                },
+                {
+                  key: "packingList",
+                  label: "Packing List",
                   icon: <FileOutlined />,
                 },
                 {

@@ -46,6 +46,8 @@ export type InquiryDetailDTO = {
   deliveryToCity: string;
   routeCode: string;
   routeDescription: string;
+  portCode: string;
+  portName: string;
   containerSize: string;
   containerType: string;
   serviceType: string;
@@ -169,6 +171,8 @@ async function mapDetail(
     deliveryToCity: priceShipper?.deliveryToCity ?? "",
     routeCode: inquiryDetail.routeCode,
     routeDescription: priceShipper?.routeDescription ?? "",
+    portCode: priceShipper?.portCode ?? "",
+    portName: priceShipper?.portName ?? "",
     containerSize: inquiryDetail.containerSize,
     containerType: priceShipper?.containerType ?? "",
     serviceType: priceShipper?.quotation?.serviceType ?? "",

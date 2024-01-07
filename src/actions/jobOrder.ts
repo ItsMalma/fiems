@@ -33,11 +33,15 @@ export type JobOrderDTO = {
     loadDate: Date;
     deliveryToCode: string;
     deliveryToName: string;
+    deliveryToCity: string;
     deliveryToAddress: string;
     routeCode: string;
     routeDescription: string;
+    portCode: string;
+    portName: string;
     containerSize: string;
     containerType: string;
+    serviceType: string;
     typeOrder: string;
   };
   roNumber: string;
@@ -84,6 +88,7 @@ export type JobOrderDTO = {
   createDate: Date;
   suratPerintahMuatNumber: string | null;
   suratJalanNumber: string | null;
+  bastNumber: string | null;
 };
 
 export type JobOrderInput = {
@@ -120,6 +125,11 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
       jobOrderNumber: jobOrder.number,
     },
   });
+  const bast = await prisma.beritaAcaraSerahTerima.findFirst({
+    where: {
+      suratJalanNumber: suratJalan?.number ?? "",
+    },
+  });
 
   return {
     number: jobOrder.number,
@@ -145,11 +155,15 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
       loadDate: inquiryDetail?.loadDate ?? new Date(),
       deliveryToCode: inquiryDetail?.deliveryToCode ?? "",
       deliveryToName: inquiryDetail?.deliveryToName ?? "",
+      deliveryToCity: inquiryDetail?.deliveryToCity ?? "",
       deliveryToAddress: inquiryDetail?.deliveryToAddress ?? "",
+      portCode: inquiryDetail?.portCode ?? "",
+      portName: inquiryDetail?.portName ?? "",
       routeCode: inquiryDetail?.routeCode ?? "",
       routeDescription: inquiryDetail?.routeDescription ?? "",
       containerSize: inquiryDetail?.containerSize ?? "",
       containerType: inquiryDetail?.containerType ?? "",
+      serviceType: inquiryDetail?.serviceType ?? "",
       typeOrder: inquiryDetail?.typeOrder ?? "",
     },
     roNumber: jobOrder.roNumber,
@@ -178,6 +192,7 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     createDate: jobOrder.createDate,
     suratPerintahMuatNumber: spm?.number ?? null,
     suratJalanNumber: suratJalan?.number ?? null,
+    bastNumber: bast?.number ?? null,
   };
 }
 

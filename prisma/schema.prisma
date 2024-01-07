@@ -60,6 +60,7 @@ model Customer {
   InquiryContainerDetail        InquiryContainerDetail[]
   ConsigneeJobOrder             JobOrder[]               @relation("consignee")
   TrackingVendorJobOrder        JobOrder[]               @relation("trackingVendor")
+  PackingList                   PackingList[]
 
   @@map("customers")
 }
@@ -171,6 +172,7 @@ model Vessel {
 
   VesselSchedule         VesselSchedule[]
   InquiryContainerDetail InquiryContainerDetail[]
+  PackingList            PackingList[]
 
   @@map("vessels")
 }
@@ -504,6 +506,8 @@ model JobOrder {
 
   SuratPerintahMuat SuratPerintahMuat?
   SuratJalan        SuratJalan?
+  PackingList       PackingList?       @relation(fields: [packingListNumber], references: [number])
+  packingListNumber String?
 
   @@map("jobOrders")
 }
@@ -560,6 +564,20 @@ model BeritaAcaraSerahTerima {
   updateDate       DateTime           @updatedAt
 
   @@map("bast")
+}
+
+model PackingList {
+  number       String     @id @map("_id")
+  shipping     Customer   @relation(fields: [shippingCode], references: [code])
+  shippingCode String
+  vessel       Vessel     @relation(fields: [vesselId], references: [id])
+  vesselId     String     @db.ObjectId
+  voyage       String
+  details      JobOrder[]
+  createDate   DateTime   @default(now())
+  updateDate   DateTime   @updatedAt
+
+  @@map("packingLists")
 }
 
 model Request {
