@@ -529,6 +529,8 @@ model SuratJalan {
   createDate          DateTime           @default(now())
   updateDate          DateTime           @updatedAt
 
+  BAST BeritaAcaraSerahTerima?
+
   @@map("suratJalan")
 }
 
@@ -543,7 +545,21 @@ model SuratJalanDetail {
   createDate       DateTime   @default(now())
   updateDate       DateTime   @updatedAt
 
+  bast       BeritaAcaraSerahTerima? @relation(fields: [bastNumber], references: [number])
+  bastNumber String?
+
   @@map("suratJalanDetails")
+}
+
+model BeritaAcaraSerahTerima {
+  number           String             @id @map("_id")
+  suratJalan       SuratJalan         @relation(fields: [suratJalanNumber], references: [number])
+  suratJalanNumber String             @unique
+  details          SuratJalanDetail[]
+  createDate       DateTime           @default(now())
+  updateDate       DateTime           @updatedAt
+
+  @@map("bast")
 }
 
 model Request {

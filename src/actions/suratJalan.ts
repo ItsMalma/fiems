@@ -47,6 +47,7 @@ export type SuratJalanDTO = {
   productCategory: string;
   details: SuratJalanDetailDTO[];
   createDate: Date;
+  bastNumber: string | null;
 };
 
 export type SuratJalanDetailInput = {
@@ -85,6 +86,11 @@ async function map(suratJalan: SuratJalan): Promise<SuratJalanDTO> {
   const productCategory = await getProductCategory(
     suratJalan.productCategoryReff
   );
+  const bast = await prisma.beritaAcaraSerahTerima.findFirst({
+    where: {
+      suratJalanNumber: suratJalan.number,
+    },
+  });
 
   return {
     number: suratJalan.number,
@@ -115,6 +121,7 @@ async function map(suratJalan: SuratJalan): Promise<SuratJalanDTO> {
     productCategory: productCategory?.name ?? "",
     details: details,
     createDate: suratJalan.createDate,
+    bastNumber: bast?.number ?? null,
   };
 }
 
