@@ -105,12 +105,12 @@ export default function SaveSuratJalan() {
     }
   }, [number, form]);
 
-  const [request] = useAction(getSuratJalan, numberParam);
+  const [suratJalan] = useAction(getSuratJalan, numberParam);
   React.useEffect(() => {
-    if (request && form) {
-      form.setFieldsValue(dtoToForm(request));
+    if (suratJalan && form) {
+      form.setFieldsValue(dtoToForm(suratJalan));
     }
-  }, [request, form]);
+  }, [suratJalan, form]);
 
   const [jobOrderOptions] = useAction(getSuratJalanJobOrderOptions);
   const [productCategoryOptions] = useAction(getProductCategoryOptions);

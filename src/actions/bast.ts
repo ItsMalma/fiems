@@ -51,8 +51,8 @@ export type BASTDTO = {
       sealNumber2: string | null;
     };
     doCustomer: number;
-    details: BASTDetailDTO[];
   };
+  details: BASTDetailDTO[];
   createDate: Date;
 };
 
@@ -65,8 +65,6 @@ export type BASTDetailInput = {
 
 export type BASTInput = {
   suratJalan: string;
-  doCustomer: number;
-  productCategory: string;
   details: BASTDetailInput[];
 };
 
@@ -90,7 +88,7 @@ async function mapDetail(
 async function map(bast: BeritaAcaraSerahTerima): Promise<BASTDTO> {
   const suratJalan = await getSuratJalan(bast.suratJalanNumber);
   const jobOrder = await getJobOrder(suratJalan?.jobOrderNumber ?? "");
-  const details = await getBASTDetails(suratJalan?.number ?? "");
+  const bastDetails = await getBASTDetails(bast?.number ?? "");
 
   return {
     number: bast.number,
@@ -125,8 +123,8 @@ async function map(bast: BeritaAcaraSerahTerima): Promise<BASTDTO> {
         sealNumber2: jobOrder?.sealNumber2 ?? null,
       },
       doCustomer: suratJalan?.doCustomer ?? 0,
-      details: details,
     },
+    details: bastDetails,
     createDate: bast.createDate,
   };
 }
