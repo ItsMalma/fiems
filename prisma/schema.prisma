@@ -309,15 +309,16 @@ enum ProductType {
 }
 
 model Product {
-  skuCode       String           @id @map("_id")
-  type          ProductType
-  category      ProductCategory? @relation(fields: [categoryReff], references: [reff])
-  categoryReff  String?
-  name          String           @unique
-  satuan        String
-  createDate    DateTime         @default(now())
-  updateDate    DateTime         @updatedAt
-  status        Boolean          @default(true)
+  skuCode      String           @id @map("_id")
+  type         ProductType
+  category     ProductCategory? @relation(fields: [categoryReff], references: [reff])
+  categoryReff String?
+  name         String           @unique
+  satuan       String
+  createDate   DateTime         @default(now())
+  updateDate   DateTime         @updatedAt
+  status       Boolean          @default(true)
+
   RequestDetail RequestDetail[]
 
   @@map("products")

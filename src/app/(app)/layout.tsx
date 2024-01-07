@@ -106,6 +106,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/operational/jobOrder",
     title: "Job Order",
   },
+  "operational.suratPerintahMuat": {
+    url: "/operational/suratPerintahMuat",
+    title: "Surat Perintah Muat",
+  },
   "operational.request": {
     url: "/operational/request",
     title: "Request",
@@ -302,6 +306,11 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
                 {
                   key: "jobOrder",
                   label: "Job Order",
+                  icon: <FileOutlined />,
+                },
+                {
+                  key: "suratPerintahMuat",
+                  label: "Surat Perintah Muat",
                   icon: <FileOutlined />,
                 },
                 {

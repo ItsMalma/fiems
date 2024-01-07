@@ -81,6 +81,7 @@ export type JobOrderDTO = {
   ta: Date | null;
   sandar: Date | null;
   createDate: Date;
+  suratPerintahMuatNumber: string | null;
 };
 
 export type JobOrderInput = {
@@ -107,6 +108,11 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     jobOrder.trackingRouteCode
   );
   const vehicle = await getVehicle(jobOrder.truckNumber);
+  const spm = await prisma.suratPerintahMuat.findFirst({
+    where: {
+      jobOrderNumber: jobOrder.number,
+    },
+  });
 
   return {
     number: jobOrder.number,
@@ -162,6 +168,7 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     ta: jobOrder.ta,
     sandar: jobOrder.sandar,
     createDate: jobOrder.createDate,
+    suratPerintahMuatNumber: spm?.number ?? null,
   };
 }
 
