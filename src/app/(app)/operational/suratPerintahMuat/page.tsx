@@ -38,6 +38,9 @@ export default function SPM() {
           `/operational/suratPerintahMuat/save?number=${record["number"]}&view=1`
         );
       },
+      onPrint: (record) => {
+        router.replace(`/print/suratPerintahMuat?number=${record["number"]}`);
+      },
     }),
   ];
 

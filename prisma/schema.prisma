@@ -297,7 +297,8 @@ model ProductCategory {
   updateDate DateTime @updatedAt
   status     Boolean  @default(true)
 
-  Product Product[]
+  Product    Product[]
+  SuratJalan SuratJalan[]
 
   @@map("productCategories")
 }
@@ -319,7 +320,8 @@ model Product {
   updateDate   DateTime         @updatedAt
   status       Boolean          @default(true)
 
-  RequestDetail RequestDetail[]
+  RequestDetail    RequestDetail[]
+  SuratJalanDetail SuratJalanDetail[]
 
   @@map("products")
 }
@@ -501,6 +503,7 @@ model JobOrder {
   updateDate         DateTime               @updatedAt
 
   SuratPerintahMuat SuratPerintahMuat?
+  SuratJalan        SuratJalan?
 
   @@map("jobOrders")
 }
@@ -513,6 +516,34 @@ model SuratPerintahMuat {
   updateDate     DateTime @updatedAt
 
   @@map("suratPerintahMuat")
+}
+
+model SuratJalan {
+  number              String             @id @map("_id")
+  jobOrder            JobOrder           @relation(fields: [jobOrderNumber], references: [number])
+  jobOrderNumber      String             @unique
+  doCustomer          Int
+  productCategory     ProductCategory    @relation(fields: [productCategoryReff], references: [reff])
+  productCategoryReff String
+  details             SuratJalanDetail[]
+  createDate          DateTime           @default(now())
+  updateDate          DateTime           @updatedAt
+
+  @@map("suratJalan")
+}
+
+model SuratJalanDetail {
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  suratJalan       SuratJalan @relation(fields: [suratJalanNumber], references: [number])
+  suratJalanNumber String
+  product          Product    @relation(fields: [productSkuCode], references: [skuCode])
+  productSkuCode   String
+  qty              Int
+  satuan           String
+  createDate       DateTime   @default(now())
+  updateDate       DateTime   @updatedAt
+
+  @@map("suratJalanDetails")
 }
 
 model Request {
