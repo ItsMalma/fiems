@@ -1,5 +1,7 @@
 "use client";
 
+import { getUser } from "@/actions/auth";
+import { useAction } from "@/lib/hooks";
 import { useMenu } from "@/stores/useMenu";
 import {
   BarChartOutlined,
@@ -22,8 +24,158 @@ import {
   WalletOutlined,
 } from "@ant-design/icons";
 import { Flex, Grid, Layout, Menu, theme } from "antd";
+import { ItemType, MenuItemType } from "antd/es/menu/hooks/useItems";
 import { useRouter } from "next/navigation";
 import React from "react";
+
+const masterMenu: ItemType<MenuItemType> = {
+  key: "master",
+  label: "Master Data",
+  icon: <DatabaseOutlined />,
+  children: [
+    {
+      key: "shipperGroup",
+      label: "Shipper Group",
+      icon: <TeamOutlined />,
+    },
+    {
+      key: "customer",
+      label: "Customer",
+      icon: <UserOutlined />,
+    },
+    {
+      key: "route",
+      label: "Route",
+      icon: <NodeIndexOutlined />,
+    },
+    {
+      key: "port",
+      label: "Port",
+      icon: <EnvironmentFilled />,
+    },
+    {
+      key: "sales",
+      label: "Sales",
+      icon: <ShopOutlined />,
+    },
+    {
+      key: "vehicle",
+      label: "Vehicle",
+      icon: <CarOutlined />,
+    },
+    {
+      key: "vessel",
+      label: "Vessel",
+      icon: <CarOutlined />,
+    },
+    {
+      key: "priceShipper",
+      label: "Price Shipper",
+      icon: <DollarOutlined />,
+    },
+    {
+      key: "priceVendor",
+      label: "Price Vendor",
+      icon: <DollarOutlined />,
+    },
+    {
+      key: "priceShipping",
+      label: "Price Shipping",
+      icon: <DollarOutlined />,
+    },
+    {
+      key: "uangJalan",
+      label: "Uang Jalan",
+      icon: <WalletOutlined />,
+    },
+    {
+      key: "productCategory",
+      label: "Product Category",
+      icon: <GroupOutlined />,
+    },
+    {
+      key: "product",
+      label: "Product",
+      icon: <BorderOutlined />,
+    },
+  ],
+};
+
+const marketingMenu: ItemType<MenuItemType> = {
+  key: "marketing",
+  label: "Marketing",
+  icon: <BarChartOutlined />,
+  children: [
+    {
+      key: "priceCalculation",
+      label: "Price Calculation",
+      icon: <CalculatorOutlined />,
+    },
+    {
+      key: "formQuotation",
+      label: "Form Quotation",
+      icon: <DollarOutlined />,
+    },
+    {
+      key: "inquiryContainer",
+      label: "Inquiry Container",
+      icon: <CarryOutOutlined />,
+    },
+    {
+      key: "vesselSchedule",
+      label: "Vessel Schedule",
+      icon: <CalendarOutlined />,
+    },
+  ],
+};
+
+const operationalMenu: ItemType<MenuItemType> = {
+  key: "operational",
+  label: "Operational",
+  icon: <SettingOutlined />,
+  children: [
+    {
+      key: "operationalInquiryContainer",
+      label: "Inquiry Container",
+      icon: <CarryOutOutlined />,
+    },
+    {
+      key: "jobOrder",
+      label: "Job Order",
+      icon: <FileOutlined />,
+    },
+    {
+      key: "suratPerintahMuat",
+      label: "Surat Perintah Muat",
+      icon: <FileOutlined />,
+    },
+    {
+      key: "suratJalan",
+      label: "Surat Jalan",
+      icon: <FileOutlined />,
+    },
+    {
+      key: "bast",
+      label: "BAST",
+      icon: <FileOutlined />,
+    },
+    {
+      key: "packingList",
+      label: "Packing List",
+      icon: <FileOutlined />,
+    },
+    {
+      key: "insurance",
+      label: "Insurance",
+      icon: <FileOutlined />,
+    },
+    {
+      key: "request",
+      label: "Request",
+      icon: <ToolOutlined />,
+    },
+  ],
+};
 
 const menuMap: Record<string, { url: string; title: string }> = {
   "master.shipperGroup": {
@@ -167,6 +319,35 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
     }
   }, [key]);
 
+  const [user] = useAction(getUser);
+
+  const items = React.useMemo(() => {
+    const items: ItemType<MenuItemType>[] = [];
+
+    if (user) {
+      user.accesses.forEach((access) => {
+        if (
+          access.name === "master" &&
+          access.actions.find((action) => action === "Read")
+        ) {
+          items.push(masterMenu);
+        } else if (
+          access.name === "marketing" &&
+          access.actions.find((action) => action === "Read")
+        ) {
+          items.push(marketingMenu);
+        } else if (
+          access.name === "operational" &&
+          access.actions.find((action) => action === "Read")
+        ) {
+          items.push(operationalMenu);
+        }
+      });
+    }
+
+    return items;
+  }, [user]);
+
   return (
     <Layout style={{ minHeight: "100vh", maxHeight: "100vh" }}>
       <Layout.Sider
@@ -199,155 +380,9 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
           </Flex>
         )}
         <Menu
+          style={{ paddingBottom: "12px" }}
           mode="inline"
-          items={[
-            {
-              key: "master",
-              label: "Master Data",
-              icon: <DatabaseOutlined />,
-              children: [
-                {
-                  key: "shipperGroup",
-                  label: "Shipper Group",
-                  icon: <TeamOutlined />,
-                },
-                {
-                  key: "customer",
-                  label: "Customer",
-                  icon: <UserOutlined />,
-                },
-                {
-                  key: "route",
-                  label: "Route",
-                  icon: <NodeIndexOutlined />,
-                },
-                {
-                  key: "port",
-                  label: "Port",
-                  icon: <EnvironmentFilled />,
-                },
-                {
-                  key: "sales",
-                  label: "Sales",
-                  icon: <ShopOutlined />,
-                },
-                {
-                  key: "vehicle",
-                  label: "Vehicle",
-                  icon: <CarOutlined />,
-                },
-                {
-                  key: "vessel",
-                  label: "Vessel",
-                  icon: <CarOutlined />,
-                },
-                {
-                  key: "priceShipper",
-                  label: "Price Shipper",
-                  icon: <DollarOutlined />,
-                },
-                {
-                  key: "priceVendor",
-                  label: "Price Vendor",
-                  icon: <DollarOutlined />,
-                },
-                {
-                  key: "priceShipping",
-                  label: "Price Shipping",
-                  icon: <DollarOutlined />,
-                },
-                {
-                  key: "uangJalan",
-                  label: "Uang Jalan",
-                  icon: <WalletOutlined />,
-                },
-                {
-                  key: "productCategory",
-                  label: "Product Category",
-                  icon: <GroupOutlined />,
-                },
-                {
-                  key: "product",
-                  label: "Product",
-                  icon: <BorderOutlined />,
-                },
-              ],
-            },
-            {
-              key: "marketing",
-              label: "Marketing",
-              icon: <BarChartOutlined />,
-              children: [
-                {
-                  key: "priceCalculation",
-                  label: "Price Calculation",
-                  icon: <CalculatorOutlined />,
-                },
-                {
-                  key: "formQuotation",
-                  label: "Form Quotation",
-                  icon: <DollarOutlined />,
-                },
-                {
-                  key: "inquiryContainer",
-                  label: "Inquiry Container",
-                  icon: <CarryOutOutlined />,
-                },
-                {
-                  key: "vesselSchedule",
-                  label: "Vessel Schedule",
-                  icon: <CalendarOutlined />,
-                },
-              ],
-            },
-            {
-              key: "operational",
-              label: "Operational",
-              icon: <SettingOutlined />,
-              children: [
-                {
-                  key: "operationalInquiryContainer",
-                  label: "Inquiry Container",
-                  icon: <CarryOutOutlined />,
-                },
-                {
-                  key: "jobOrder",
-                  label: "Job Order",
-                  icon: <FileOutlined />,
-                },
-                {
-                  key: "suratPerintahMuat",
-                  label: "Surat Perintah Muat",
-                  icon: <FileOutlined />,
-                },
-                {
-                  key: "suratJalan",
-                  label: "Surat Jalan",
-                  icon: <FileOutlined />,
-                },
-                {
-                  key: "bast",
-                  label: "BAST",
-                  icon: <FileOutlined />,
-                },
-                {
-                  key: "packingList",
-                  label: "Packing List",
-                  icon: <FileOutlined />,
-                },
-                {
-                  key: "insurance",
-                  label: "Insurance",
-                  icon: <FileOutlined />,
-                },
-                {
-                  key: "request",
-                  label: "Request",
-                  icon: <ToolOutlined />,
-                },
-              ],
-            },
-          ]}
+          items={items}
           selectedKeys={selectedKeys.key}
           onSelect={(info) => {
             const menu = menuMap[info.keyPath.reverse().join(".")];

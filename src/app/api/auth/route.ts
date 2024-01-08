@@ -1,3 +1,4 @@
+import { UserDTO } from "@/actions/auth";
 import prisma from "@/lib/prisma";
 import * as jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
@@ -18,7 +19,12 @@ export async function POST(req: NextRequest) {
     }
 
     return Response.json({
-      data: user,
+      data: {
+        id: user.id,
+        username: user.username,
+        accesses: user.accesses,
+        createDate: user.createDate,
+      } as UserDTO,
     });
   } catch (err) {
     return Response.json({ data: null });

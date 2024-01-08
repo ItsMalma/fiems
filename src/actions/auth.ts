@@ -46,3 +46,31 @@ export async function login(username: string, password: string) {
 
   redirect("/");
 }
+
+export async function verify(token: string) {
+  try {
+    const payload = jwt.verify(token, process.env.JWT as string) as {
+      id: string;
+    };
+
+    const user = await prisma.user.findUnique({
+      where: { id: payload.id },
+    });
+    if (!user) {
+      return null;
+    }
+
+    return map(user);
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function getUser() {
+  const token = cookies().get("token");
+  if (!token) {
+    return null;
+  }
+
+  return await verify(token.value);
+}
