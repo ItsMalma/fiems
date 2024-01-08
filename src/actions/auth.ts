@@ -24,7 +24,7 @@ function map(user: User): UserDTO {
 }
 
 export async function login(username: string, password: string) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { username, password },
   });
 
@@ -53,7 +53,7 @@ export async function verify(token: string) {
       id: string;
     };
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { id: payload.id },
     });
     if (!user) {
@@ -73,4 +73,9 @@ export async function getUser() {
   }
 
   return await verify(token.value);
+}
+
+export async function logout() {
+  cookies().delete("token");
+  redirect("/login");
 }

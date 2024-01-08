@@ -1,6 +1,6 @@
 "use client";
 
-import { getUser } from "@/actions/auth";
+import { getUser, logout } from "@/actions/auth";
 import { useAction } from "@/lib/hooks";
 import { useMenu } from "@/stores/useMenu";
 import {
@@ -15,6 +15,7 @@ import {
   EnvironmentFilled,
   FileOutlined,
   GroupOutlined,
+  LogoutOutlined,
   NodeIndexOutlined,
   SettingOutlined,
   ShopOutlined,
@@ -23,7 +24,7 @@ import {
   UserOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
-import { Flex, Grid, Layout, Menu, theme } from "antd";
+import { Button, Flex, Grid, Layout, Menu, Tooltip, theme } from "antd";
 import { ItemType, MenuItemType } from "antd/es/menu/hooks/useItems";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -410,7 +411,19 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
             boxShadow,
           }}
         >
-          <h1>{headerTitle}</h1>
+          <Flex align="center" justify="space-between">
+            <h1>{headerTitle || "Home"}</h1>
+            <Tooltip title="Logout">
+              <Button
+                type="text"
+                icon={<LogoutOutlined />}
+                style={{ color: "white" }}
+                onClick={async () => {
+                  await logout();
+                }}
+              />
+            </Tooltip>
+          </Flex>
         </Layout.Header>
         <Layout.Content style={{ overflow: "auto", padding: "12px" }}>
           <Flex

@@ -2,7 +2,7 @@
 
 import { login } from "@/actions/auth";
 import { Button, Flex, Form, theme } from "antd";
-import { Input } from "antx";
+import { Input, Password } from "antx";
 import Image from "next/image";
 
 export default function LoginPage() {
@@ -62,7 +62,7 @@ export default function LoginPage() {
           >
             <Flex vertical gap="small">
               <Input name="username" />
-              <Input.Password name="password" />
+              <Password name="password" />
               <Button type="primary" onClick={form.submit}>
                 Login
               </Button>
