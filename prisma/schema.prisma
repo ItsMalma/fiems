@@ -7,6 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserAccessAction {
+  Create
+  Read
+  Update
+  Delete
+}
+
+type UserAccess {
+  name    String
+  actions UserAccessAction[]
+}
+
+model User {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  username   String       @unique
+  password   String
+  accesses   UserAccess[]
+  createDate DateTime     @default(now())
+  updateDate DateTime     @updatedAt
+
+  @@map("users")
+}
+
 model ShipperGroup {
   code        String   @id @map("_id")
   name        String   @unique

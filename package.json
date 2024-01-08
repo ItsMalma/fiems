@@ -16,6 +16,7 @@
     "antd": "^5.12.5",
     "antx": "^5.5.0",
     "dayjs": "^1.11.10",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "next": "14.0.4",
     "react": "^18",
@@ -26,6 +27,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20",
     "@types/react": "^18",

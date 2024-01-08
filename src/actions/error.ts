@@ -1,6 +1,13 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { FieldData } from "rc-field-form/es/interface";
 
+export function createError(name: string, message: string): FieldData {
+  return {
+    name: name,
+    errors: [message],
+  };
+}
+
 export function handleError(err: unknown): FieldData[] {
   const fieldsData: FieldData[] = [];
 
