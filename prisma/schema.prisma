@@ -508,6 +508,7 @@ model JobOrder {
   SuratJalan        SuratJalan?
   PackingList       PackingList?       @relation(fields: [packingListNumber], references: [number])
   packingListNumber String?
+  Insurance         Insurance?
 
   @@map("jobOrders")
 }
@@ -578,6 +579,19 @@ model PackingList {
   updateDate   DateTime   @updatedAt
 
   @@map("packingLists")
+}
+
+model Insurance {
+  number           String   @id @map("_id")
+  jobOrder         JobOrder @relation(fields: [jobOrderNumber], references: [number])
+  jobOrderNumber   String   @unique
+  nilaiTertanggung Float
+  premi            Float
+  keterangan       String?
+  createDate       DateTime @default(now())
+  updateDate       DateTime @updatedAt
+
+  @@map("insurances")
 }
 
 model Request {

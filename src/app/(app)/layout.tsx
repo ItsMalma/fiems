@@ -70,10 +70,6 @@ const menuMap: Record<string, { url: string; title: string }> = {
     url: "/master/uangJalan",
     title: "Uang Jalan",
   },
-  "master.uangMuat": {
-    url: "/master/uangMuat",
-    title: "Uang Muat",
-  },
   "master.productCategory": {
     url: "/master/productCategory",
     title: "Product Category",
@@ -121,6 +117,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "operational.packingList": {
     url: "/operational/packingList",
     title: "Packing List",
+  },
+  "operational.insurance": {
+    url: "/operational/insurance",
+    title: "Insurance",
   },
   "operational.request": {
     url: "/operational/request",
@@ -262,11 +262,6 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
                   icon: <WalletOutlined />,
                 },
                 {
-                  key: "uangMuat",
-                  label: "Uang Muat",
-                  icon: <WalletOutlined />,
-                },
-                {
                   key: "productCategory",
                   label: "Product Category",
                   icon: <GroupOutlined />,
@@ -338,6 +333,11 @@ export default function AppLayout({ children }: React.PropsWithChildren) {
                 {
                   key: "packingList",
                   label: "Packing List",
+                  icon: <FileOutlined />,
+                },
+                {
+                  key: "insurance",
+                  label: "Insurance",
                   icon: <FileOutlined />,
                 },
                 {

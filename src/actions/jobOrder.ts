@@ -89,6 +89,7 @@ export type JobOrderDTO = {
   suratPerintahMuatNumber: string | null;
   suratJalanNumber: string | null;
   bastNumber: string | null;
+  insuranceNumber: string | null;
 };
 
 export type JobOrderInput = {
@@ -128,6 +129,11 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
   const bast = await prisma.beritaAcaraSerahTerima.findFirst({
     where: {
       suratJalanNumber: suratJalan?.number ?? "",
+    },
+  });
+  const insurance = await prisma.insurance.findFirst({
+    where: {
+      jobOrderNumber: jobOrder.number,
     },
   });
 
@@ -193,6 +199,7 @@ async function map(jobOrder: JobOrder): Promise<JobOrderDTO> {
     suratPerintahMuatNumber: spm?.number ?? null,
     suratJalanNumber: suratJalan?.number ?? null,
     bastNumber: bast?.number ?? null,
+    insuranceNumber: insurance?.number ?? null,
   };
 }
 

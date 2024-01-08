@@ -2,6 +2,7 @@
 
 import {
   getInquiryShippingOptions,
+  getInquiryVesselOptions,
   getInquiryVoyageOptions,
 } from "@/actions/inquiry";
 import {
@@ -108,7 +109,7 @@ export default function SavePackingList() {
   }, [packingList, form]);
 
   const [shippingOptions] = useAction(getInquiryShippingOptions);
-  const [vesselOptions] = useAction(getInquiryShippingOptions, shipping);
+  const [vesselOptions] = useAction(getInquiryVesselOptions, shipping);
   const [voyageOptions] = useAction(getInquiryVoyageOptions, shipping, vessel);
 
   const [jobOrders] = useAction(
@@ -118,7 +119,7 @@ export default function SavePackingList() {
     voyage
   );
   React.useEffect(() => {
-    if (jobOrders && form) {
+    if (jobOrders && form && viewParam !== "1") {
       form.setFieldsValue({
         details: jobOrders.map((jobOrder) => ({
           jobOrder: jobOrder.number,
@@ -138,7 +139,7 @@ export default function SavePackingList() {
         })),
       });
     }
-  }, [form, jobOrders]);
+  }, [form, jobOrders, viewParam]);
 
   return (
     <SaveLayout<PackingListForm>
