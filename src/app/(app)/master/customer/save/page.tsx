@@ -151,6 +151,7 @@ export default function SaveCustomer() {
           ]}
           required
           disabled={!!codeParam}
+          showSearch
         />
       </Col>
       <Col span={12}></Col>
@@ -165,7 +166,12 @@ export default function SaveCustomer() {
       </Col>
       <Col span={12}>
         {type === "Shipper" && (
-          <Select label="Group" name="group" options={shipperGroupOptions} />
+          <Select
+            label="Group"
+            name="group"
+            options={shipperGroupOptions}
+            showSearch
+          />
         )}
       </Col>
       <Col span={12}>

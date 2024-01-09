@@ -295,11 +295,15 @@ export default function PriceCalculation() {
         }
       }}
       onCancel={() => router.replace("/marketing/formQuotation")}
-      onConfirm={confirmParam ? async () => {
-        if (!idParam) return;
-        await confirmQuotationDetail(idParam);
-        router.replace("/marketing/formQuotation");
-      } : undefined}
+      onConfirm={
+        confirmParam
+          ? async () => {
+              if (!idParam) return;
+              await confirmQuotationDetail(idParam);
+              router.replace("/marketing/formQuotation");
+            }
+          : undefined
+      }
       view={viewParam === "1" || confirmParam === "1"}
     >
       <Col span={12}>
@@ -314,6 +318,7 @@ export default function PriceCalculation() {
           label="Service Type"
           rules={[requiredRule]}
           options={serviceTypeOptions}
+          showSearch
         />
       </Col>
       <Col span={12}>
@@ -382,12 +387,14 @@ export default function PriceCalculation() {
                     label="Port"
                     rules={[requiredRule]}
                     options={portOptions}
+                    showSearch
                   />
                   <Select
                     name={[field.name, "containerSize"]}
                     label="Container Size"
                     rules={[requiredRule]}
                     options={containerSizeOptions}
+                    showSearch
                   />
                   <Select
                     name={[field.name, "containerType"]}

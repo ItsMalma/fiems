@@ -38,7 +38,7 @@ export default function Vehicle() {
     textColumn("rangkaNumber"),
     textColumn("silinder"),
     textColumn("color"),
-    dateColumn("stnkExpired"),
+    dateColumn("stnkExpired", "STNK Expired"),
     dateColumn("pajakExpired"),
     dateColumn("keurExpired"),
     statusColumn("status", async (checked, record) => {

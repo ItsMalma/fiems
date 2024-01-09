@@ -1,5 +1,6 @@
 "use client";
 
+import CelLogo from "@/../public/cel-logo.jpg";
 import { getQuotation } from "@/actions/quotation";
 import { useAction } from "@/lib/hooks";
 import { PlusCircleFilled } from "@ant-design/icons";
@@ -34,7 +35,7 @@ export default function PrintQuotation() {
 
   return (
     <Flex vertical style={{ minHeight: "100vh", padding: "0 4rem" }}>
-      <Image src="/LogoCel.png" alt="Logo Cel" width={100} height={100} />
+      <Image src={CelLogo} alt="Logo Cel" width={100} height={100} />
       <Flex vertical gap="small" justify="center" align="center">
         <Flex style={{ width: "max-content" }} align="center" justify="center">
           <div style={{ width: "6rem" }}>

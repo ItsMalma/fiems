@@ -117,6 +117,7 @@ export default function SaveSales() {
             { label: "Direktur", value: "Direktur" },
             { label: "Marketing", value: "Marketing" },
           ]}
+          showSearch
         />
       </Col>
       <Col span={12}>

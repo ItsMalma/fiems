@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  UangJalanDTO,
-  getAllUangJalan,
-  setUangJalanStatus,
-} from "@/actions/uangJalan";
+  UangMuatDTO,
+  getAllUangMuat,
+  setUangMuatStatus,
+} from "@/actions/uangMuat";
 import ReportLayout from "@/components/layouts/ReportLayout";
 import { useAction } from "@/lib/hooks";
 import { containerSizes, truckTypes } from "@/lib/utils/consts";
@@ -20,16 +20,16 @@ import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export default function UangJalan() {
+export default function UangMuat() {
   const { setKey } = useMenu();
   React.useEffect(() => {
-    setKey("master.uangJalan");
+    setKey("master.uangMuat");
   }, [setKey]);
 
-  const [uangJalan, refresh] = useAction(getAllUangJalan);
+  const [uangMuat, refresh] = useAction(getAllUangMuat);
 
   const router = useRouter();
-  const columns: ColumnsType<UangJalanDTO> = [
+  const columns: ColumnsType<UangMuatDTO> = [
     dateColumn("createDate"),
     textColumn("priceVendorDetail.priceVendor.vendorName", "Vendor Name"),
     textColumn("priceVendorDetail.routeDescription", "Route Description"),
@@ -39,23 +39,20 @@ export default function UangJalan() {
       containerSizes
     ),
     textColumn("truckType", "Truck Type", truckTypes),
-    moneyColumn("bbm", "BBM"),
-    moneyColumn("tol"),
     moneyColumn("biayaBuruh"),
-    moneyColumn("meal"),
     moneyColumn("lainLain"),
     moneyColumn("total"),
     statusColumn("status", async (checked, record) => {
-      await setUangJalanStatus(record.id, checked);
+      await setUangMuatStatus(record.id, checked);
       refresh();
     }),
     actionColumn(
       {
         onView: (record) => {
-          router.replace(`/master/uangJalan/save?id=${record["id"]}&view=1`);
+          router.replace(`/master/uangMuat/save?id=${record["id"]}&view=1`);
         },
         onEdit: (record) => {
-          router.replace(`/master/uangJalan/save?id=${record["id"]}`);
+          router.replace(`/master/uangMuat/save?id=${record["id"]}`);
         },
       },
       "status"
@@ -64,10 +61,10 @@ export default function UangJalan() {
 
   return (
     <ReportLayout
-      name="Uang Jalan"
-      saveUrl="/master/uangJalan/save"
+      name="Uang Muat"
+      saveUrl="/master/uangMuat/save"
       columns={columns}
-      data={uangJalan}
+      data={uangMuat}
       rowKey="id"
     />
   );

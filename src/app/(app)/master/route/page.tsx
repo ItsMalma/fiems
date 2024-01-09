@@ -26,10 +26,7 @@ export default function Route() {
   const columns: ColumnsType<RouteDTO> = [
     dateColumn("createDate"),
     textColumn("code"),
-    textColumn("province"),
-    textColumn("city"),
-    textColumn("origin"),
-    textColumn("destination"),
+    textColumn("description"),
     statusColumn("status", async (checked, record) => {
       await setRouteStatus(record.code, checked);
       refresh();
@@ -38,9 +35,6 @@ export default function Route() {
       {
         onView: (record) => {
           router.replace(`/master/route/save?code=${record["code"]}&view=1`);
-        },
-        onEdit: (record) => {
-          router.replace(`/master/route/save?code=${record["code"]}`);
         },
       },
       "status"

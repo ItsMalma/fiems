@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { Port, PortType } from "@prisma/client";
-import { handleError } from "./error";
+import { createError, handleError } from "./error";
 
 export type PortDTO = {
   code: string;
@@ -46,7 +46,32 @@ export async function getPortCode() {
   return "PORT" + (Number(port.code.slice(-4)) + 1).toString().padStart(4, "0");
 }
 
+async function isUnique(input: PortInput, code: string | null = null) {
+  const port = await prisma.port.findFirst({
+    where: {
+      province: { equals: input.province, mode: "insensitive" },
+      city: { equals: input.city, mode: "insensitive" },
+      name: { equals: input.name, mode: "insensitive" },
+      type: input.type,
+    },
+  });
+  if (!port || (code && port.code === code)) {
+    return true;
+  }
+
+  return false;
+}
+
 export async function savePort(input: PortInput, code: string | null = null) {
+  if (!(await isUnique(input, code))) {
+    return [
+      createError("province", "Sudah ada yang sama"),
+      createError("city", "Sudah ada yang sama"),
+      createError("name", "Sudah ada yang sama"),
+      createError("type", "Sudah ada yang sama"),
+    ];
+  }
+
   try {
     if (!code) {
       await prisma.port.create({
@@ -90,7 +115,7 @@ export async function getPortOptions() {
     .filter((port) => port.status)
     .map((port) => ({
       value: port.code,
-      label: port.name,
+      label: `${port.city} - ${port.name} - ${port.type}`,
     }));
 }
 

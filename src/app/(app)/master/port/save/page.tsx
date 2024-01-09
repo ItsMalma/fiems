@@ -129,6 +129,7 @@ export default function SavePort() {
             { label: "Arrival", value: "Arrival" },
             { label: "Departure", value: "Departure" },
           ]}
+          showSearch
         />
       </Col>
     </SaveLayout>

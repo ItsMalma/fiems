@@ -90,6 +90,11 @@ const masterMenu: ItemType<MenuItemType> = {
       icon: <WalletOutlined />,
     },
     {
+      key: "uangMuat",
+      label: "Uang Muat",
+      icon: <WalletOutlined />,
+    },
+    {
       key: "productCategory",
       label: "Product Category",
       icon: <GroupOutlined />,
@@ -176,6 +181,11 @@ const operationalMenu: ItemType<MenuItemType> = {
       icon: <CalendarOutlined />,
     },
     {
+      key: "dooring",
+      label: "Dooring",
+      icon: <CalendarOutlined />,
+    },
+    {
       key: "request",
       label: "Request",
       icon: <ToolOutlined />,
@@ -227,6 +237,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "master.uangJalan": {
     url: "/master/uangJalan",
     title: "Uang Jalan",
+  },
+  "master.uangMuat": {
+    url: "/master/uangMuat",
+    title: "Uang Muat",
   },
   "master.productCategory": {
     url: "/master/productCategory",
@@ -283,6 +297,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "operational.vesselSchedule": {
     url: "/operational/vesselSchedule",
     title: "Vessel Schedule",
+  },
+  "operational.dooring": {
+    url: "/operational/dooring",
+    title: "Dooring",
   },
   "operational.request": {
     url: "/operational/request",

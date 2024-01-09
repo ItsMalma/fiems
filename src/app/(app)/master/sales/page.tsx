@@ -28,7 +28,7 @@ export default function Sales() {
     textColumn("code"),
     textColumn("jobPosition", "Job Position", ["Direktur", "Marketing"]),
     textColumn("name"),
-    textColumn("nik"),
+    textColumn("nik", "NIK"),
     textColumn("cabang"),
     textColumn("phoneNumber"),
     textColumn("telephone"),

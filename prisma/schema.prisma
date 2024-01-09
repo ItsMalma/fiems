@@ -251,6 +251,7 @@ model PriceVendorDetail {
   status        Boolean     @default(true)
 
   UangJalan UangJalan[]
+  UangMuat  UangMuat[]
 
   @@map("priceVendorDetails")
 }
@@ -312,6 +313,20 @@ model UangJalan {
   status              Boolean           @default(true)
 
   @@map("uangJalan")
+}
+
+model UangMuat {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  priceVendorDetail   PriceVendorDetail @relation(fields: [priceVendorDetailId], references: [id])
+  priceVendorDetailId String            @db.ObjectId
+  truckType           String
+  biayaBuruh          Float
+  lainLain            Float
+  createDate          DateTime          @default(now())
+  updateDate          DateTime          @updatedAt
+  status              Boolean           @default(true)
+
+  @@map("uangMuat")
 }
 
 model ProductCategory {
@@ -532,6 +547,7 @@ model JobOrder {
   PackingList       PackingList?       @relation(fields: [packingListNumber], references: [number])
   packingListNumber String?
   Insurance         Insurance?
+  Dooring           Dooring?
 
   @@map("jobOrders")
 }
@@ -615,6 +631,19 @@ model Insurance {
   updateDate       DateTime @updatedAt
 
   @@map("insurances")
+}
+
+model Dooring {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobOrder        JobOrder @relation(fields: [jobOrderNumber], references: [number])
+  jobOrderNumber  String   @unique
+  bongkarKapal    DateTime
+  estimateDooring DateTime
+  actualDooring   DateTime
+  createDate      DateTime @default(now())
+  updateDate      DateTime @updatedAt
+
+  @@map("doorings")
 }
 
 model Request {
