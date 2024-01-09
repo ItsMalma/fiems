@@ -136,12 +136,15 @@ export default function SaveInsurance() {
     <SaveLayout<InsuranceForm>
       form={form}
       onSubmit={async (val) => {
-        const err = await saveInsurance({
-          jobOrder: val.jobOrder,
-          nilaiTertanggung: val.nilaiTertanggung,
-          premi: val.premi,
-          keterangan: val.keterangan,
-        });
+        const err = await saveInsurance(
+          {
+            jobOrder: val.jobOrder,
+            nilaiTertanggung: val.nilaiTertanggung,
+            premi: val.premi,
+            keterangan: val.keterangan,
+          },
+          numberParam
+        );
         if (err) {
           form.setFields(err);
         } else {

@@ -50,6 +50,11 @@ export default function Insurance() {
       onPrint: (record) => {
         router.replace(`/print/insurance?number=${record["number"]}`);
       },
+      onEdit: (record) => {
+        router.replace(
+          `/operational/insurance/save?number=${record["number"]}`
+        );
+      },
     }),
   ];
 

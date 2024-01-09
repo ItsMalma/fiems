@@ -171,6 +171,11 @@ const operationalMenu: ItemType<MenuItemType> = {
       icon: <FileOutlined />,
     },
     {
+      key: "vesselSchedule",
+      label: "Vessel Schedule",
+      icon: <CalendarOutlined />,
+    },
+    {
       key: "request",
       label: "Request",
       icon: <ToolOutlined />,
@@ -274,6 +279,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "operational.insurance": {
     url: "/operational/insurance",
     title: "Insurance",
+  },
+  "operational.vesselSchedule": {
+    url: "/operational/vesselSchedule",
+    title: "Vessel Schedule",
   },
   "operational.request": {
     url: "/operational/request",

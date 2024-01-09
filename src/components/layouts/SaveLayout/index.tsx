@@ -10,7 +10,7 @@ import SaveLayoutSkeleton from "./skeleton";
 
 type SaveLayoutProps<T extends object> = {
   form: FormInstance;
-  onSubmit: (val: T) => void | Promise<void>;
+  onSubmit?: (val: T) => void | Promise<void>;
   onCancel: () => void | Promise<void>;
   onConfirm?: () => void | Promise<void>;
 
@@ -47,7 +47,9 @@ export default function SaveLayout<T extends object>({
           }}
           autoComplete="off"
           onFinish={async (val) => {
-            await Promise.resolve(props.onSubmit(val));
+            if (props.onSubmit) {
+              await Promise.resolve(props.onSubmit(val));
+            }
           }}
           style={{ flexGrow: 1 }}
           initialValues={props.init}
