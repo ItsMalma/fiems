@@ -49,9 +49,9 @@ export type DooringDTO = {
     ta: Date | null;
     sandar: Date | null;
   };
-  bongkarKapal: Date;
-  estimateDooring: Date;
-  actualDooring: Date;
+  bongkarKapal: Date | null;
+  estimateDooring: Date | null;
+  actualDooring: Date | null;
   createDate: Date;
 };
 
@@ -73,4 +73,55 @@ export async function getAllDooring(): Promise<DooringDTO[]> {
   const doorings = await prisma.dooring.findMany();
 
   return await Promise.all(doorings.map(map));
+}
+
+type DooringInput = {
+  jobOrderNumber: string;
+  bongkarKapal: Date;
+  estimateDooring: Date;
+  actualDooring: Date;
+};
+
+export async function saveDooring(input: DooringInput) {
+  const dooring = await getDooringByJobOrderNumber(input.jobOrderNumber);
+
+  if (!dooring) {
+    return await prisma.dooring.create({
+      data: {
+        jobOrder: {
+          connect: { number: input.jobOrderNumber },
+        },
+        bongkarKapal: input.bongkarKapal,
+        estimateDooring: input.estimateDooring,
+        actualDooring: input.actualDooring,
+      },
+    });
+  } else {
+    return await prisma.dooring.update({
+      where: {
+        id: dooring.id,
+      },
+      data: {
+        bongkarKapal: input.bongkarKapal,
+        estimateDooring: input.estimateDooring,
+        actualDooring: input.actualDooring,
+      },
+    });
+  }
+}
+
+export async function getDooringByJobOrderNumber(
+  jobOrderNumber: string
+): Promise<DooringDTO | null> {
+  const dooring = await prisma.dooring.findFirst({
+    where: {
+      jobOrderNumber,
+    },
+  });
+
+  if (!dooring) {
+    return null;
+  }
+
+  return await map(dooring);
 }

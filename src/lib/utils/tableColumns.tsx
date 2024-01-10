@@ -1,4 +1,10 @@
-import { CheckCircleFilled, EyeFilled, PrinterFilled } from "@ant-design/icons";
+import {
+  CalendarOutlined,
+  CheckCircleFilled,
+  EditFilled,
+  EyeFilled,
+  PrinterFilled,
+} from "@ant-design/icons";
 import { Button, Space, Switch } from "antd";
 import { ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -156,11 +162,13 @@ export function actionColumn<RecordType extends object>(
     onView,
     onEdit,
     onConfirm,
+    onDooring,
     onPrint,
   }: {
     onView?: (record: RecordType) => void;
     onEdit?: (record: RecordType) => void;
     onConfirm?: (record: RecordType) => void;
+    onDooring?: (record: RecordType) => void;
     onPrint?: (record: RecordType) => void;
   },
   selectKey?: KeyOf<RecordType>
@@ -179,11 +187,27 @@ export function actionColumn<RecordType extends object>(
             style={{ backgroundColor: "green" }}
           />
         )}
+        {onEdit && (!selectKey || lodash.get(record, selectKey)) && (
+          <Button
+            type="primary"
+            icon={<EditFilled />}
+            onClick={() => onEdit(record)}
+            style={{ backgroundColor: "blue" }}
+          />
+        )}
         {onConfirm && (!selectKey || lodash.get(record, selectKey)) && (
           <Button
             type="primary"
             icon={<CheckCircleFilled />}
             onClick={() => onConfirm(record)}
+            style={{ backgroundColor: "orange" }}
+          />
+        )}
+        {onDooring && (!selectKey || lodash.get(record, selectKey)) && (
+          <Button
+            type="primary"
+            icon={<CalendarOutlined />}
+            onClick={() => onDooring(record)}
             style={{ backgroundColor: "orange" }}
           />
         )}

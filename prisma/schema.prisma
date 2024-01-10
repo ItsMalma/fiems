@@ -634,14 +634,14 @@ model Insurance {
 }
 
 model Dooring {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  jobOrder        JobOrder @relation(fields: [jobOrderNumber], references: [number])
-  jobOrderNumber  String   @unique
-  bongkarKapal    DateTime
-  estimateDooring DateTime
-  actualDooring   DateTime
-  createDate      DateTime @default(now())
-  updateDate      DateTime @updatedAt
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  jobOrder        JobOrder  @relation(fields: [jobOrderNumber], references: [number])
+  jobOrderNumber  String    @unique
+  bongkarKapal    DateTime?
+  estimateDooring DateTime?
+  actualDooring   DateTime?
+  createDate      DateTime  @default(now())
+  updateDate      DateTime  @updatedAt
 
   @@map("doorings")
 }

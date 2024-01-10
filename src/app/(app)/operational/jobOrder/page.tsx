@@ -15,7 +15,7 @@ import { Tabs } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { Confirm, PindahKapal } from "./modals";
+import { Confirm, Dooring, PindahKapal } from "./modals";
 
 export default function JobOrder() {
   const { setKey } = useMenu();
@@ -28,6 +28,11 @@ export default function JobOrder() {
   const [confirmed, setConfirmed] = React.useState(false);
 
   const [openConfirm, setOpenConfirm] = React.useState<{
+    jobOrder?: JobOrderDTO;
+    open: boolean;
+  }>({ open: false });
+
+  const [openDooring, setOpenDooring] = React.useState<{
     jobOrder?: JobOrderDTO;
     open: boolean;
   }>({ open: false });
@@ -67,14 +72,12 @@ export default function JobOrder() {
           `/operational/jobOrder/save?number=${record["number"]}&view=1`
         );
       },
-      onConfirm: confirmed
-        ? undefined
-        : (record) => {
-            setOpenConfirm({
-              jobOrder: record,
-              open: true,
-            });
-          },
+      onConfirm: (record) => {
+        setOpenConfirm({
+          jobOrder: record,
+          open: true,
+        });
+      },
     }),
   ];
 
@@ -115,14 +118,12 @@ export default function JobOrder() {
           `/operational/jobOrder/save?number=${record["number"]}&view=1`
         );
       },
-      onConfirm: confirmed
-        ? undefined
-        : (record) => {
-            setOpenConfirm({
-              jobOrder: record,
-              open: true,
-            });
-          },
+      onDooring: (record) => {
+        setOpenDooring({
+          jobOrder: record,
+          open: true,
+        });
+      },
     }),
   ];
 
@@ -193,14 +194,24 @@ export default function JobOrder() {
           key: "confirmed",
           label: "Confirmed",
           children: (
-            <ReportLayout
-              name="Job Order"
-              columns={confirmedColumns}
-              data={(jobOrders ?? []).filter(
-                (jobOrder) => jobOrder.td && jobOrder.ta && jobOrder.sandar
-              )}
-              rowKey="number"
-            />
+            <>
+              <ReportLayout
+                name="Job Order"
+                columns={confirmedColumns}
+                data={(jobOrders ?? []).filter(
+                  (jobOrder) => jobOrder.td && jobOrder.ta && jobOrder.sandar
+                )}
+                rowKey="number"
+              />
+              <Dooring
+                open={openDooring.open && !!openDooring.jobOrder}
+                onClose={() => {
+                  setOpenDooring((prev) => ({ ...prev, open: false }));
+                  refresh();
+                }}
+                jobOrder={openDooring.jobOrder!}
+              />
+            </>
           ),
         },
       ]}

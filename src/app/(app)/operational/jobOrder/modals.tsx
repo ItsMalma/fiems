@@ -1,3 +1,4 @@
+import { getDooringByJobOrderNumber, saveDooring } from "@/actions/dooring";
 import {
   getInquiryShippingOptions,
   getInquiryVesselOptions,
@@ -187,6 +188,103 @@ export function Confirm(props: ConfirmProps) {
           popupStyle={{
             zoom: 1,
           }}
+        />
+      </Form>
+    </Modal>
+  );
+}
+
+type DooringProps = {
+  open: boolean;
+  onClose: () => void;
+  jobOrder: JobOrderDTO;
+};
+
+export function Dooring(props: DooringProps) {
+  const [form] = Form.useForm();
+
+  const bongkarKapal = Form.useWatch("bongkarKapal", form);
+  const estimateDooring = Form.useWatch("estimateDooring", form);
+
+  const [dooring, refresh] = useAction(
+    getDooringByJobOrderNumber,
+    props.jobOrder?.number
+  );
+  React.useEffect(() => {
+    refresh();
+  }, [refresh, props.open]);
+
+  React.useEffect(() => {
+    if (dooring) {
+      console.log(dooring);
+      form.setFieldsValue({
+        bongkarKapal: dooring.bongkarKapal ? dayjs(dooring.bongkarKapal) : null,
+        estimateDooring: dooring.estimateDooring
+          ? dayjs(dooring.estimateDooring)
+          : null,
+        actualDooring: dooring.actualDooring
+          ? dayjs(dooring.actualDooring)
+          : null,
+      });
+    }
+  }, [dooring, form]);
+
+  return (
+    <Modal
+      title="Dooring"
+      centered
+      destroyOnClose={true}
+      open={props.open}
+      onCancel={() => props.onClose()}
+      onOk={() => form.submit()}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        colon={false}
+        requiredMark={(label, { required }) => {
+          return (
+            <>
+              {label}
+              {required && <span style={{ color: "red" }}>*</span>}
+            </>
+          );
+        }}
+        autoComplete="off"
+        onFinish={async (val) => {
+          await saveDooring({
+            jobOrderNumber: props.jobOrder.number,
+            bongkarKapal: val.bongkarKapal,
+            estimateDooring: val.estimateDooring,
+            actualDooring: val.actualDooring,
+          });
+          props.onClose();
+        }}
+      >
+        <DatePicker
+          disabled={!!dooring?.bongkarKapal}
+          name="bongkarKapal"
+          label="Bongkar Kapal"
+        />
+        <DatePicker
+          disabled={!!dooring?.estimateDooring}
+          disabledDate={(current) => {
+            if (bongkarKapal) {
+              return current.isBefore(bongkarKapal);
+            }
+          }}
+          name="estimateDooring"
+          label="Estimate Dooring"
+        />
+        <DatePicker
+          disabled={!!dooring?.actualDooring}
+          disabledDate={(current) => {
+            if (estimateDooring) {
+              return current.isBefore(estimateDooring);
+            }
+          }}
+          name="actualDooring"
+          label="Actual Dooring"
         />
       </Form>
     </Modal>
