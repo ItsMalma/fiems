@@ -48,6 +48,7 @@ export type DooringDTO = {
     td: Date | null;
     ta: Date | null;
     sandar: Date | null;
+    suratJalanNumber: string | null;
   };
   bongkarKapal: Date | null;
   estimateDooring: Date | null;
