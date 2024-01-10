@@ -643,7 +643,28 @@ model Dooring {
   createDate      DateTime  @default(now())
   updateDate      DateTime  @updatedAt
 
+  StorageDemurage StorageDemurage?
+
   @@map("doorings")
+}
+
+model StorageDemurage {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  dooring          Dooring  @relation(fields: [dooringId], references: [id])
+  dooringId        String   @unique @db.ObjectId
+  freeTimeStorage  Int
+  freeTimeDemurage Int
+  masa1            Int
+  priceMasa1       Float
+  masa2            Int
+  priceMasa2       Float
+  masa3            Int
+  priceMasa3       Float
+  nilaiDemurage    Float
+  createDate       DateTime @default(now())
+  updateDate       DateTime @updatedAt
+
+  @@map("storageDemurages")
 }
 
 model Request {
