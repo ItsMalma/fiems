@@ -34,9 +34,9 @@ export default function PrintQuotation() {
   }
 
   return (
-    <Flex vertical style={{ minHeight: "100vh", padding: "0 4rem" }}>
-      <Image src={CelLogo} alt="Logo Cel" width={100} height={100} />
-      <Flex vertical gap="small" justify="center" align="center">
+    <Flex vertical style={{ minHeight: "100vh", padding: "0 2rem" }}>
+      <Image src={CelLogo} alt="Logo Cel" width={160} height={100} />
+      <Flex vertical justify="center" align="center">
         <Flex style={{ width: "max-content" }} align="center" justify="center">
           <div style={{ width: "6rem" }}>
             <label style={{ fontWeight: "700" }}>Kepada : </label>
