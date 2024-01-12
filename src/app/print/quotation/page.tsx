@@ -34,7 +34,7 @@ export default function PrintQuotation() {
   }
 
   return (
-    <Flex vertical style={{ minHeight: "100vh", padding: "0 2rem" }}>
+    <Flex vertical style={{ minHeight: "100vh", padding: "1rem 2rem" }}>
       <Image src={CelLogo} alt="Logo Cel" width={160} height={100} />
       <Flex vertical justify="center" align="center">
         <Flex style={{ width: "max-content" }} align="center" justify="center">
