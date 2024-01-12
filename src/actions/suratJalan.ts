@@ -31,6 +31,11 @@ export type SuratJalanDTO = {
         shipperAddress: string;
         shipperCity: string;
       };
+      deliveryToCode: string;
+      deliveryToName: string;
+      deliveryToAddress: string;
+      routeCode: string;
+      routeDescription: string;
       shippingCode: string;
       shippingName: string;
       vesselId: string;
@@ -110,6 +115,11 @@ async function map(suratJalan: SuratJalan): Promise<SuratJalanDTO> {
           shipperAddress: jobOrder?.inquiryDetail.inquiry.shipperAddress ?? "",
           shipperCity: jobOrder?.inquiryDetail.inquiry.shipperCity ?? "",
         },
+        deliveryToCode: jobOrder?.inquiryDetail.deliveryToCode ?? "",
+        deliveryToName: jobOrder?.inquiryDetail.deliveryToName ?? "",
+        deliveryToAddress: jobOrder?.inquiryDetail.deliveryToAddress ?? "",
+        routeCode: jobOrder?.inquiryDetail.routeCode ?? "",
+        routeDescription: jobOrder?.inquiryDetail.routeDescription ?? "",
         shippingCode: jobOrder?.inquiryDetail.shippingCode ?? "",
         shippingName: jobOrder?.inquiryDetail.shippingName ?? "",
         vesselId: jobOrder?.inquiryDetail.vesselId ?? "",
