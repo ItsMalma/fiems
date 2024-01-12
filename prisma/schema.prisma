@@ -49,6 +49,14 @@ enum CustomerType {
   Shipping
 }
 
+type PIC {
+  name        String?
+  email       String?
+  phoneNumber String?
+  telephone   String?
+  fax         String?
+}
+
 model Customer {
   code       String        @id @map("_id")
   type       CustomerType
@@ -64,6 +72,9 @@ model Customer {
   email      String?
   top        Int
   currency   String
+  purchasing PIC
+  operation  PIC
+  finance    PIC
   createDate DateTime      @default(now())
   updateDate DateTime      @updatedAt
   status     Boolean       @default(true)
