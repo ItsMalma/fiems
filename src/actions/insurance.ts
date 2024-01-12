@@ -18,6 +18,13 @@ export type InsuranceDTO = {
         shipperAddress: string;
         shipperCity: string;
       };
+      deliveryToCode: string;
+      deliveryToName: string;
+      deliveryToAddress: string;
+      routeCode: string;
+      routeDescription: string;
+      portCode: string;
+      portName: string;
       shippingCode: string;
       shippingName: string;
       vesselId: string;
@@ -29,6 +36,7 @@ export type InsuranceDTO = {
     consigneeAddress: string;
     consigneeCity: string;
     truckNumber: string;
+    td: Date | null;
     containerNumber1: string;
     sealNumber1: string;
     containerNumber2: string | null;
@@ -64,6 +72,13 @@ async function map(insurance: Insurance): Promise<InsuranceDTO> {
           shipperAddress: jobOrder?.inquiryDetail.inquiry.shipperAddress ?? "",
           shipperCity: jobOrder?.inquiryDetail.inquiry.shipperCity ?? "",
         },
+        deliveryToCode: jobOrder?.inquiryDetail.deliveryToCode ?? "",
+        deliveryToName: jobOrder?.inquiryDetail.deliveryToName ?? "",
+        deliveryToAddress: jobOrder?.inquiryDetail.deliveryToAddress ?? "",
+        routeCode: jobOrder?.inquiryDetail.routeCode ?? "",
+        routeDescription: jobOrder?.inquiryDetail.routeDescription ?? "",
+        portCode: jobOrder?.inquiryDetail.portCode ?? "",
+        portName: jobOrder?.inquiryDetail.portName ?? "",
         shippingCode: jobOrder?.inquiryDetail.shippingCode ?? "",
         shippingName: jobOrder?.inquiryDetail.shippingName ?? "",
         vesselId: jobOrder?.inquiryDetail.vesselId ?? "",
@@ -75,6 +90,7 @@ async function map(insurance: Insurance): Promise<InsuranceDTO> {
       consigneeAddress: jobOrder?.consigneeAddress ?? "",
       consigneeCity: jobOrder?.consigneeCity ?? "",
       truckNumber: jobOrder?.truckNumber ?? "",
+      td: jobOrder?.td ?? null,
       containerNumber1: jobOrder?.containerNumber1 ?? "",
       sealNumber1: jobOrder?.sealNumber1 ?? "",
       containerNumber2: jobOrder?.containerNumber2 ?? null,
