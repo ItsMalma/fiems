@@ -20,6 +20,27 @@ export type CustomerDTO = {
   email: string;
   top: number;
   currency: string;
+  purchasing: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    telephone?: string;
+    fax?: string;
+  };
+  operation: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    telephone?: string;
+    fax?: string;
+  };
+  finance: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    telephone?: string;
+    fax?: string;
+  };
   createDate: Date;
   status: boolean;
 };
@@ -37,6 +58,27 @@ export type CustomerInput = {
   email?: string;
   top: number;
   currency: string;
+  purchasing: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    telephone?: string;
+    fax?: string;
+  };
+  operation: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    telephone?: string;
+    fax?: string;
+  };
+  finance: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+    telephone?: string;
+    fax?: string;
+  };
 };
 
 async function map(customer: Customer): Promise<CustomerDTO> {
@@ -60,6 +102,27 @@ async function map(customer: Customer): Promise<CustomerDTO> {
     email: customer.email ?? "",
     top: customer.top,
     currency: customer.currency,
+    purchasing: {
+      name: customer.purchasing.name ?? "",
+      email: customer.purchasing.email ?? "",
+      phoneNumber: customer.purchasing.phoneNumber ?? "",
+      telephone: customer.purchasing.telephone ?? "",
+      fax: customer.purchasing.fax ?? "",
+    },
+    operation: {
+      name: customer.operation.name ?? "",
+      email: customer.operation.email ?? "",
+      phoneNumber: customer.operation.phoneNumber ?? "",
+      telephone: customer.operation.telephone ?? "",
+      fax: customer.operation.fax ?? "",
+    },
+    finance: {
+      name: customer.finance.name ?? "",
+      email: customer.finance.email ?? "",
+      phoneNumber: customer.finance.phoneNumber ?? "",
+      telephone: customer.finance.telephone ?? "",
+      fax: customer.finance.fax ?? "",
+    },
     createDate: customer.createDate,
     status: customer.status && (shipperGroup?.status ?? true),
   };
@@ -106,6 +169,27 @@ export async function saveCustomer(
           email: input.email,
           top: input.top,
           currency: input.currency,
+          purchasing: {
+            name: input.purchasing.name,
+            email: input.purchasing.email,
+            phoneNumber: input.purchasing.phoneNumber,
+            telephone: input.purchasing.telephone,
+            fax: input.purchasing.fax,
+          },
+          operation: {
+            name: input.operation.name,
+            email: input.operation.email,
+            phoneNumber: input.operation.phoneNumber,
+            telephone: input.operation.telephone,
+            fax: input.operation.fax,
+          },
+          finance: {
+            name: input.finance.name,
+            email: input.finance.email,
+            phoneNumber: input.finance.phoneNumber,
+            telephone: input.finance.telephone,
+            fax: input.finance.fax,
+          },
           status: true,
         },
       });
@@ -126,6 +210,27 @@ export async function saveCustomer(
           email: input.email,
           top: input.top,
           currency: input.currency,
+          purchasing: {
+            name: input.purchasing.name,
+            email: input.purchasing.email,
+            phoneNumber: input.purchasing.phoneNumber,
+            telephone: input.purchasing.telephone,
+            fax: input.purchasing.fax,
+          },
+          operation: {
+            name: input.operation.name,
+            email: input.operation.email,
+            phoneNumber: input.operation.phoneNumber,
+            telephone: input.operation.telephone,
+            fax: input.operation.fax,
+          },
+          finance: {
+            name: input.finance.name,
+            email: input.finance.email,
+            phoneNumber: input.finance.phoneNumber,
+            telephone: input.finance.telephone,
+            fax: input.finance.fax,
+          },
         },
       });
     }
