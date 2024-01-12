@@ -42,7 +42,7 @@ export default function BAST() {
         );
       },
       onPrint: (record) => {
-        router.replace(`/print/suratJalan?number=${record["number"]}`);
+        router.replace(`/print/bast?number=${record["number"]}`);
       },
     }),
   ];
