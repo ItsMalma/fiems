@@ -103,25 +103,25 @@ async function map(customer: Customer): Promise<CustomerDTO> {
     top: customer.top,
     currency: customer.currency,
     purchasing: {
-      name: customer.purchasing.name ?? "",
-      email: customer.purchasing.email ?? "",
-      phoneNumber: customer.purchasing.phoneNumber ?? "",
-      telephone: customer.purchasing.telephone ?? "",
-      fax: customer.purchasing.fax ?? "",
+      name: customer.purchasing?.name ?? "",
+      email: customer.purchasing?.email ?? "",
+      phoneNumber: customer.purchasing?.phoneNumber ?? "",
+      telephone: customer.purchasing?.telephone ?? "",
+      fax: customer.purchasing?.fax ?? "",
     },
     operation: {
-      name: customer.operation.name ?? "",
-      email: customer.operation.email ?? "",
-      phoneNumber: customer.operation.phoneNumber ?? "",
-      telephone: customer.operation.telephone ?? "",
-      fax: customer.operation.fax ?? "",
+      name: customer.operation?.name ?? "",
+      email: customer.operation?.email ?? "",
+      phoneNumber: customer.operation?.phoneNumber ?? "",
+      telephone: customer.operation?.telephone ?? "",
+      fax: customer.operation?.fax ?? "",
     },
     finance: {
-      name: customer.finance.name ?? "",
-      email: customer.finance.email ?? "",
-      phoneNumber: customer.finance.phoneNumber ?? "",
-      telephone: customer.finance.telephone ?? "",
-      fax: customer.finance.fax ?? "",
+      name: customer.finance?.name ?? "",
+      email: customer.finance?.email ?? "",
+      phoneNumber: customer.finance?.phoneNumber ?? "",
+      telephone: customer.finance?.telephone ?? "",
+      fax: customer.finance?.fax ?? "",
     },
     createDate: customer.createDate,
     status: customer.status && (shipperGroup?.status ?? true),
@@ -194,6 +194,7 @@ export async function saveCustomer(
         },
       });
     } else {
+      console.log(input.purchasing);
       await prisma.customer.update({
         where: {
           code: code,

@@ -21,7 +21,7 @@ import {
 } from "@/lib/utils/forms";
 import { useMenu } from "@/stores/useMenu";
 import { CustomerType } from "@prisma/client";
-import { App, Col, Form } from "antd";
+import { App, Col, Collapse, Form, Row } from "antd";
 import {
   AutoComplete,
   DatePicker,
@@ -49,6 +49,21 @@ type CustomerForm = {
   email?: string;
   top: number;
   currency: string;
+  purchasingName?: string;
+  purchasingEmail?: string;
+  purchasingPhoneNumber?: string;
+  purchasingTelephone?: string;
+  purchasingFax?: string;
+  operationName?: string;
+  operationEmail?: string;
+  operationPhoneNumber?: string;
+  operationTelephone?: string;
+  operationFax?: string;
+  financeName?: string;
+  financeEmail?: string;
+  financePhoneNumber?: string;
+  financeTelephone?: string;
+  financeFax?: string;
 };
 
 function dtoToForm(dto: CustomerDTO): CustomerForm {
@@ -67,6 +82,21 @@ function dtoToForm(dto: CustomerDTO): CustomerForm {
     email: dto.email,
     top: dto.top,
     currency: dto.currency,
+    purchasingName: dto.purchasing?.name,
+    purchasingEmail: dto.purchasing?.email,
+    purchasingPhoneNumber: dto.purchasing?.phoneNumber,
+    purchasingTelephone: dto.purchasing?.telephone,
+    purchasingFax: dto.purchasing?.fax,
+    operationName: dto.operation?.name,
+    operationEmail: dto.operation?.email,
+    operationPhoneNumber: dto.operation?.phoneNumber,
+    operationTelephone: dto.operation?.telephone,
+    operationFax: dto.operation?.fax,
+    financeName: dto.finance?.name,
+    financeEmail: dto.finance?.email,
+    financePhoneNumber: dto.finance?.phoneNumber,
+    financeTelephone: dto.finance?.telephone,
+    financeFax: dto.finance?.fax,
   };
 }
 
@@ -125,6 +155,27 @@ export default function SaveCustomer() {
             email: val.email,
             top: val.top,
             currency: val.currency,
+            purchasing: {
+              name: val.purchasingName,
+              email: val.purchasingEmail,
+              phoneNumber: val.purchasingPhoneNumber,
+              telephone: val.purchasingTelephone,
+              fax: val.purchasingFax,
+            },
+            operation: {
+              name: val.operationName,
+              email: val.operationEmail,
+              phoneNumber: val.operationPhoneNumber,
+              telephone: val.operationTelephone,
+              fax: val.operationFax,
+            },
+            finance: {
+              name: val.financeName,
+              email: val.financeEmail,
+              phoneNumber: val.financePhoneNumber,
+              telephone: val.financeTelephone,
+              fax: val.financeFax,
+            },
           },
           codeParam
         );
@@ -217,6 +268,118 @@ export default function SaveCustomer() {
           rules={[requiredRule]}
           options={currencyOptions}
           filterOption={autoCompleteFilterOption}
+        />
+      </Col>
+      <Col span={12}></Col>
+      <Col span={24}>
+        <Collapse
+          items={[
+            {
+              key: "purchasing",
+              label: "Purchasing",
+              children: (
+                <Row gutter={[12, 12]}>
+                  <Col span={12}>
+                    <Input label="Name" name="purchasingName" />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Email"
+                      name="purchasingEmail"
+                      rules={[emailRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Phone Number"
+                      name="purchasingPhoneNumber"
+                      rules={[telephoneRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Telephone"
+                      name="purchasingTelephone"
+                      rules={[telephoneRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input label="Fax" name="purchasingFax" rules={[faxRule]} />
+                  </Col>
+                </Row>
+              ),
+            },
+            {
+              key: "operation",
+              label: "Operation",
+              children: (
+                <Row gutter={[12, 12]}>
+                  <Col span={12}>
+                    <Input label="Name" name="operationName" />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Email"
+                      name="operationEmail"
+                      rules={[emailRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Phone Number"
+                      name="operationPhoneNumber"
+                      rules={[telephoneRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Telephone"
+                      name="operationTelephone"
+                      rules={[telephoneRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input label="Fax" name="operationFax" rules={[faxRule]} />
+                  </Col>
+                </Row>
+              ),
+            },
+            {
+              key: "finance",
+              label: "Finance",
+              children: (
+                <Row gutter={[12, 12]}>
+                  <Col span={12}>
+                    <Input label="Name" name="financeName" />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Email"
+                      name="financeEmail"
+                      rules={[emailRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Phone Number"
+                      name="financePhoneNumber"
+                      rules={[telephoneRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      label="Telephone"
+                      name="financeTelephone"
+                      rules={[telephoneRule]}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input label="Fax" name="financeFax" rules={[faxRule]} />
+                  </Col>
+                </Row>
+              ),
+            },
+          ]}
         />
       </Col>
     </SaveLayout>

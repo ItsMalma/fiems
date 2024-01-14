@@ -72,9 +72,9 @@ model Customer {
   email      String?
   top        Int
   currency   String
-  purchasing PIC
-  operation  PIC
-  finance    PIC
+  purchasing PIC?
+  operation  PIC?
+  finance    PIC?
   createDate DateTime      @default(now())
   updateDate DateTime      @updatedAt
   status     Boolean       @default(true)
