@@ -603,11 +603,6 @@ model SuratJalanDetail {
   productSkuCode   String
   qty              Int
   satuan           String
-  kode             String
-  warna            String
-  rangka           String
-  mesin            String
-  spek             String
   createDate       DateTime   @default(now())
   updateDate       DateTime   @updatedAt
 
