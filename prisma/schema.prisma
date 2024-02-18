@@ -95,6 +95,8 @@ model Customer {
   ConsigneeJobOrder             JobOrder[]               @relation("consignee")
   TrackingVendorJobOrder        JobOrder[]               @relation("trackingVendor")
   PackingList                   PackingList[]
+  ShippingInstruction           ShippingInstruction[]
+  ConsigneeShippingInstruction  ShippingInstruction[]    @relation("consignee")
 
   @@map("customers")
 }
@@ -165,8 +167,9 @@ model Sales {
   updateDate  DateTime         @updatedAt
   status      Boolean          @default(true)
 
-  Quotation        Quotation[]
-  InquiryContainer InquiryContainer[]
+  Quotation           Quotation[]
+  InquiryContainer    InquiryContainer[]
+  ShippingInstruction ShippingInstruction[]
 
   @@map("sales")
 }
@@ -207,6 +210,7 @@ model Vessel {
   VesselSchedule         VesselSchedule[]
   InquiryContainerDetail InquiryContainerDetail[]
   PackingList            PackingList[]
+  ShippingInstruction    ShippingInstruction[]
 
   @@map("vessels")
 }
@@ -553,12 +557,14 @@ model JobOrder {
   createDate         DateTime               @default(now())
   updateDate         DateTime               @updatedAt
 
-  SuratPerintahMuat SuratPerintahMuat?
-  SuratJalan        SuratJalan?
-  PackingList       PackingList?       @relation(fields: [packingListNumber], references: [number])
-  packingListNumber String?
-  Insurance         Insurance?
-  Dooring           Dooring?
+  SuratPerintahMuat         SuratPerintahMuat?
+  SuratJalan                SuratJalan?
+  PackingList               PackingList?         @relation(fields: [packingListNumber], references: [number])
+  packingListNumber         String?
+  Insurance                 Insurance?
+  Dooring                   Dooring?
+  ShippingInstruction       ShippingInstruction? @relation(fields: [shippingInstructionNumber], references: [number])
+  shippingInstructionNumber String?
 
   @@map("jobOrders")
 }
@@ -597,6 +603,11 @@ model SuratJalanDetail {
   productSkuCode   String
   qty              Int
   satuan           String
+  kode             String
+  warna            String
+  rangka           String
+  mesin            String
+  spek             String
   createDate       DateTime   @default(now())
   updateDate       DateTime   @updatedAt
 
@@ -700,4 +711,46 @@ model RequestDetail {
   updateDate     DateTime @updatedAt
 
   @@map("requestDetails")
+}
+
+enum ShippingInstructionBillingAndPayment {
+  Prepaid
+  Collect
+}
+
+model ShippingInstruction {
+  number                       String                               @id @map("_id")
+  shipper                      Customer                             @relation(fields: [shipperCode], references: [code])
+  shipperCode                  String                               @map("customerCode")
+  consignee                    Customer                             @relation("consignee", fields: [consigneeCode], references: [code])
+  consigneeCode                String
+  ownerName                    String
+  ownerAddress                 String
+  portOfLoading                String
+  portOfDischarge              String
+  shippingTerm                 String
+  vessel                       Vessel                               @relation(fields: [vesselId], references: [id])
+  vesselId                     String                               @db.ObjectId
+  voyage                       String
+  oceanFreight                 ShippingInstructionBillingAndPayment
+  portOfLoadingCharges         ShippingInstructionBillingAndPayment
+  portOfLoadingDiscargeCharges ShippingInstructionBillingAndPayment
+  goods                        Boolean
+  temperature                  String
+  nomorUN                      String
+  dangerousGoods               String
+  catatan                      String
+  transhipmentImport           Boolean
+  pib                          Boolean
+  bc12                         Boolean
+  transhipmentExport           Boolean
+  peb                          Boolean
+  bc10                         Boolean
+  sales                        Sales                                @relation(fields: [salesCode], references: [code])
+  salesCode                    String
+  details                      JobOrder[]
+  createDate                   DateTime                             @default(now())
+  updateDate                   DateTime                             @updatedAt
+
+  @@map("shippingInstructions")
 }

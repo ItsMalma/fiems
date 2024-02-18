@@ -176,6 +176,11 @@ const operationalMenu: ItemType<MenuItemType> = {
       icon: <FileOutlined />,
     },
     {
+      key: "shippingInstruction",
+      label: "Shipping Instruction",
+      icon: <FileOutlined />,
+    },
+    {
       key: "vesselSchedule",
       label: "Vessel Schedule",
       icon: <CalendarOutlined />,
@@ -293,6 +298,10 @@ const menuMap: Record<string, { url: string; title: string }> = {
   "operational.insurance": {
     url: "/operational/insurance",
     title: "Insurance",
+  },
+  "operational.shippingInstruction": {
+    url: "/operational/shippingInstruction",
+    title: "Shipping Instruction",
   },
   "operational.vesselSchedule": {
     url: "/operational/vesselSchedule",
